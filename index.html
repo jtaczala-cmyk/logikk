@@ -184,7 +184,7 @@ a{color:var(--teal)}
 #winBest{font-size:13px!important;color:var(--teal2)!important;min-height:1em}
 #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:21}
 #dbg{position:fixed;left:4px;bottom:4px;z-index:30;font:10px monospace;background:#200;color:#f88;padding:2px 5px;border-radius:5px;opacity:.7;pointer-events:none}
-@media (max-height:700px){#menu .card{padding-top:12px}.dif .btn{min-height:52px}#menu .btn.tl{min-height:48px}}
+@media (max-height:700px){#menu .hgrid{display:none}#menu .card{padding-top:16px}.dif .btn{min-height:52px}#menu .btn.tl{min-height:48px}}
 @media (max-height:600px){#top{min-height:42px}.ibtn{width:36px;height:36px}#info{min-height:26px}.tb{min-height:46px}.k{min-height:52px}}
 @media (min-width:700px) and (min-height:760px){.k{min-height:66px;font-size:30px}.tb{min-height:56px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -413,6 +413,7 @@ var DEBUG = /[?&]debug=1(&|$)/.test(location.search);
 var LAUNCH = /*@@LAUNCH@@*/false; // public launch build: no test badge/title, analytics + privacy link on
 var LANGDIR = (/\/(pl|en)\/(index\.html)?$/.exec(location.pathname) || [])[1] || ''; // /logikk/pl/ and /logikk/en/ = language entry pages (own SEO/OG); the game URL stays /logikk/
 var SAVE_KEY = 'logikk_save_v1', PREF_KEY = 'logikk_prefs_v1', STAT_KEY = 'logikk_stats_v1';
+if (DEBUG && /[?&]reset=1/.test(location.search)) try { localStorage.clear(); } catch (e) {} // tests: start from a clean device
 var $ = function (id) { return document.getElementById(id); };
 var LANGS = ['no', 'pl', 'en'], LANG_NAME = { no: 'Norsk', pl: 'Polski', en: 'English' };
 function normLang(l) { l = String(l || '').toLowerCase(); if (/^(nb|nn|no)\b/.test(l)) return 'no'; if (/^pl\b/.test(l)) return 'pl'; if (/^en\b/.test(l)) return 'en'; return null; }
@@ -765,6 +766,7 @@ if (DEBUG) window.LOGIKK = {
   cellXY: function (i) { var r = cells[i].getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width }; },
   fillAllBut: function (n) { var e = []; for (var i = 0; i < 81; i++) if (S.cur[i] !== S.sol[i]) e.push(i); e.slice(n || 0).forEach(function (i) { S.cur[i] = S.sol[i]; S.notes[i] = 0; }); save(); render(); return e.slice(0, n || 0); },
   load: function (puz, sol) { S.puz = puz.slice(); S.sol = sol.slice(); S.cur = puz.slice(); S.notes = puz.map(function () { return 0; }); S.hist = []; S.hintsUsed = 0; S.mistakes = 0; S.done = false; S.sel = -1; save(); render(); },
+  set: function (patch) { Object.assign(S, patch); save(); render(); },
   LG: LG
 };
 
