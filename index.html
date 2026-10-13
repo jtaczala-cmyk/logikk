@@ -778,11 +778,20 @@ if (gcOn) {
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') gcFlush(); });
   window.addEventListener('pagehide', gcFlush);
 }
-function track(name) { if (DEBUG) (window.__gcLog = window.__gcLog || []).push(name); if (!gcOn) return; var it = { n: name, tries: 0 }; it.t = setTimeout(function () { gcSend(it); }, Math.random() * 15000); gcPend.push(it); }
+function track(name) { gcPlayTime(name); if (DEBUG) (window.__gcLog = window.__gcLog || []).push(name); if (!gcOn) return; var it = { n: name, tries: 0 }; it.t = setTimeout(function () { gcSend(it); }, Math.random() * 15000); gcPend.push(it); }
 function gcSend(it) { var i = gcPend.indexOf(it); if (i < 0) return; clearTimeout(it.t);
   if (!(window.goatcounter && window.goatcounter.count)) { if (++it.tries <= 40) it.t = setTimeout(function () { gcSend(it); }, 500); else gcPend.splice(i, 1); return; }
   gcPend.splice(i, 1); try { window.goatcounter.count({ path: 'logikk-' + it.n, title: 'logikk ' + it.n, event: true }); } catch (e) {} }
 function gcFlush() { gcPend.slice().forEach(function (it) { it.tries = 99; gcSend(it); }); }
+
+/* Play time (anonymous): '<game>-time-<bucket>' sent once per game, on game over or when the page is left. Nothing stored. */
+function gcPlayTime(n) { if (/^start/.test(n)) gcPlayTime.t0 = Date.now(); else if (/^(finish|over)/.test(n)) gcPlayEnd(); }
+function gcPlayEnd() { var t0 = gcPlayTime.t0; if (!t0) return; gcPlayTime.t0 = 0; var m = (Date.now() - t0) / 60000;
+  track('time-' + (m < 1 ? '0-1m' : m < 3 ? '1-3m' : m < 5 ? '3-5m' : m < 10 ? '5-10m' : m < 20 ? '10-20m' : '20m+')); }
+if (gcOn) {
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { gcPlayEnd(); gcFlush(); } });
+  window.addEventListener('pagehide', function () { gcPlayEnd(); gcFlush(); });
+}
 
 /* ---------------- test hooks (?debug=1 only) ---------------- */
 if (DEBUG) window.LOGIKK = {
