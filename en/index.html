@@ -555,7 +555,7 @@ var stats = { easy: { won: 0, best: 0 }, medium: { won: 0, best: 0 }, hard: { wo
 try { var st0 = JSON.parse(localStorage.getItem(STAT_KEY) || 'null'); if (st0) ['easy', 'medium', 'hard'].forEach(function (d) { if (st0[d]) stats[d] = { won: +st0[d].won || 0, best: +st0[d].best || 0 }; }), stats.daily = st0.daily || {}; } catch (e) {}
 function saveStats() { try { localStorage.setItem(STAT_KEY, JSON.stringify(stats)); } catch (e) {} }
 
-function newBoard(diff, daily) {
+function newBoard(diff, daily) {window.StopWisdom&&StopWisdom.hide();
   var seed = daily ? LG.dayKey() : (Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
   var g = LG.generate(daily ? 'medium' : diff, daily ? 'daily-' + seed : seed);
   S = { v: 1, diff: daily ? 'medium' : diff, seed: seed, daily: daily ? seed : '', puz: g.puzzle, sol: g.solution, cur: g.puzzle.slice(), notes: g.puzzle.map(function () { return 0; }),
@@ -817,5 +817,7 @@ if (/[?&]nobadge=1/.test(location.search)) document.querySelectorAll('.testbadge
 if (DEBUG && !/nobadge/.test(location.search)) { var dbg = document.createElement('div'); dbg.id = 'dbg'; dbg.textContent = 'debug'; document.body.appendChild(dbg); }
 })();
 </script>
+<script src="https://stop60.no/assets/wisdom.js" defer></script>
+<script>addEventListener("load",function(){window.StopWisdom&&StopWisdom.show({before:document.getElementById("mContinue")})});</script>
 </body>
 </html>
