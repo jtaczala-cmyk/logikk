@@ -536,7 +536,7 @@ function applyLang() {
   $('bName').textContent = t('name'); $('mTitle').textContent = t('name'); $('board').setAttribute('aria-label', t('boardLbl'));
   $('mPts').innerHTML = PTS[prefs.lang].map(function (p, i) { return '<li><span class="n">' + (i + 1) + '</span><span><b>' + p[0] + '</b>' + p[1] + '</span></li>'; }).join('');
   document.title = LAUNCH ? TITLES[prefs.lang] : t('name') + ' — ' + { no: 'testversjon', pl: 'wersja testowa', en: 'test version' }[prefs.lang];
-  var privHref = gameBase() + { no: 'personvern/', pl: 'prywatnosc/', en: 'en/privacy/' }[prefs.lang], privOn = LAUNCH;
+  var privHref = gameBase() + { no: 'personvern/', pl: 'personvern/', en: 'en/privacy/' }[prefs.lang], privOn = LAUNCH;
   $('fPrivW').hidden = !privOn; $('fPriv').href = privHref;
   $('rulesCard').innerHTML = t('rulesHtml') + '<button class="btn main" id="rClose">' + t('close') + '</button>' + (privOn ? '<p class="rpriv">© 2026 Stop60 · <a class="privl" id="rPriv" href="' + privHref + '">' + t('privacy') + '</a></p>' : '');
   $('rClose').onclick = function () { hide('rules'); };

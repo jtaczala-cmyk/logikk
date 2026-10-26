@@ -239,7 +239,7 @@ a{color:var(--teal)}
     <button class="tb" id="tHint"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span data-t="hint">Hint</span><i class="badge" id="hintBadge">3</i></button>
   </section>
   <section id="pad" aria-label="1–9"></section>
-  <footer id="foot">© 2026 Stop60 · All rights reserved<span id="fPrivW" hidden> · <a class="privl" id="fPriv" href="personvern/" data-t="privacy">Personvern</a></span></footer>
+  <footer id="foot">© 2026 Stop60 · All rights reserved<span id="fPrivW" hidden> · <a class="privl" id="fPriv" href="/logikk/personvern/" data-t="privacy">Personvern</a></span></footer>
 </div>
 
 <div class="ov" id="menu" hidden><div class="card">
@@ -536,7 +536,7 @@ function applyLang() {
   $('bName').textContent = t('name'); $('mTitle').textContent = t('name'); $('board').setAttribute('aria-label', t('boardLbl'));
   $('mPts').innerHTML = PTS[prefs.lang].map(function (p, i) { return '<li><span class="n">' + (i + 1) + '</span><span><b>' + p[0] + '</b>' + p[1] + '</span></li>'; }).join('');
   document.title = LAUNCH ? TITLES[prefs.lang] : t('name') + ' — ' + { no: 'testversjon', pl: 'wersja testowa', en: 'test version' }[prefs.lang];
-  var privHref = gameBase() + { no: 'personvern/', pl: 'prywatnosc/', en: 'en/privacy/' }[prefs.lang], privOn = LAUNCH;
+  var privHref = gameBase() + { no: 'personvern/', pl: 'personvern/', en: 'en/privacy/' }[prefs.lang], privOn = LAUNCH;
   $('fPrivW').hidden = !privOn; $('fPriv').href = privHref;
   $('rulesCard').innerHTML = t('rulesHtml') + '<button class="btn main" id="rClose">' + t('close') + '</button>' + (privOn ? '<p class="rpriv">© 2026 Stop60 · <a class="privl" id="rPriv" href="' + privHref + '">' + t('privacy') + '</a></p>' : '');
   $('rClose').onclick = function () { hide('rules'); };
