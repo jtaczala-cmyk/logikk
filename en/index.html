@@ -220,7 +220,7 @@ a{color:var(--teal)}
 <div id="app">
   <header id="top">
     <div class="brand"><svg class="mark" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="#12110f" stroke="#f5f1e8" stroke-width="2"/><path d="M10.3 2v26M19.7 2v26M2 10.3h26M2 19.7h26" stroke="rgba(245,241,232,.35)" stroke-width="1.2"/><rect x="11" y="11" width="8" height="8" fill="#e11d2a"/><rect x="20.4" y="2.4" width="7.2" height="7.2" rx="1.6" fill="#2dd4bf"/></svg>
-      <div class="bname"><b id="bName">Ren logikk</b><small>Stop60</small></div></div>
+      <div class="bname"><b id="bName">Pure Logic</b><small>Stop60</small></div></div>
     <button class="ibtn" id="langBtn" aria-label="Language">EN</button>
     <button class="ibtn" id="muteBtn" aria-label="Sound" aria-pressed="false"></button>
     <button class="ibtn" id="rulesBtn" aria-label="Rules"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.3a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.3-2.7 4"/><circle cx="12" cy="17.6" r=".6" fill="currentColor"/></svg></button>
@@ -228,48 +228,49 @@ a{color:var(--teal)}
   </header>
   <section id="info">
     <span class="chip" id="iDiff"></span><span class="sp"></span>
-    <span class="st err" id="iErrW"><span data-t="mistakes">Feil</span> <b id="iErr">0</b></span>
-    <span class="st" id="iHintW"><span data-t="hintsLeft">Hint</span> <b id="iHint">3</b></span>
+    <span class="st err" id="iErrW"><span data-t="mistakes">Mistakes</span> <b id="iErr">0</b></span>
+    <span class="st" id="iHintW"><span data-t="hintsLeft">Hints</span> <b id="iHint">3</b></span>
     <span id="clock" hidden>0:00</span>
   </section>
   <section id="boardWrap"><div id="board" role="grid" aria-label="Board"></div><div id="toast" role="status" aria-live="polite"></div></section>
   <section id="tools">
-    <button class="tb" id="tUndo"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span data-t="undo">Angre</span></button>
-    <button class="tb" id="tErase"><svg viewBox="0 0 24 24"><path d="M20 20H9L4.6 15.6a2 2 0 0 1 0-2.8L13 4.4a2 2 0 0 1 2.8 0l4 4a2 2 0 0 1 0 2.8L12 19"/><path d="m8.5 9.5 6 6"/></svg><span data-t="erase">Visk ut</span></button>
-    <button class="tb" id="tNotes" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-t="notes">Notater</span></button>
+    <button class="tb" id="tUndo"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span data-t="undo">Undo</span></button>
+    <button class="tb" id="tErase"><svg viewBox="0 0 24 24"><path d="M20 20H9L4.6 15.6a2 2 0 0 1 0-2.8L13 4.4a2 2 0 0 1 2.8 0l4 4a2 2 0 0 1 0 2.8L12 19"/><path d="m8.5 9.5 6 6"/></svg><span data-t="erase">Erase</span></button>
+    <button class="tb" id="tNotes" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span data-t="notes">Notes</span></button>
     <button class="tb" id="tHint"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span data-t="hint">Hint</span><i class="badge" id="hintBadge">3</i></button>
   </section>
   <section id="pad" aria-label="1–9"></section>
-  <footer id="foot">© 2026 Stop60 · All rights reserved<span id="fPrivW" hidden> · <a class="privl" id="fPriv" href="/logikk/personvern/" data-t="privacy">Personvern</a></span></footer>
+  <footer id="foot">© 2026 Stop60 · All rights reserved<span id="fPrivW" hidden> · <a class="privl" id="fPriv" href="/logikk/personvern/" data-t="privacy">Privacy</a></span></footer>
 </div>
 
 <div class="ov" id="menu" hidden><div class="card">
   <div class="hero"><div class="hgrid" aria-hidden="true"><i>5</i><i class="t">3</i><i></i><i>6</i><i class="r">7</i><i class="t">1</i><i></i><i>9</i><i>8</i></div>
-    <h1 class="title" id="mTitle">Ren logikk</h1><p class="tsub" data-t="tagline">Tallpuslespill</p></div>
+    <h1 class="title" id="mTitle">Pure Logic</h1><p class="tsub" data-t="tagline">Number puzzle</p>
+  <p class="seo-lead" style="margin:12px 0 4px;line-height:1.55;font-size:0.95rem;max-width:36rem">Pure Logic is a free number puzzle in your browser: fill in 1–9 with no repeats in any row, column or 3×3 box. No luck involved, short rounds and a daily puzzle – no app, no ads, no account, on stop60.no.</p></div>
   <ul class="pts" id="mPts"></ul>
-  <button class="btn main" id="mContinue" hidden><span class="bt"><span data-t="continue">Fortsett</span><small id="mContInfo"></small></span></button>
+  <button class="btn main" id="mContinue" hidden><span class="bt"><span data-t="continue">Continue board</span><small id="mContInfo"></small></span></button>
   <div class="dif">
-    <button class="btn" id="mEasy" data-d="easy"><span data-t="easy">Lett</span><small data-t="easyT">2–5 min</small></button>
-    <button class="btn" id="mMedium" data-d="medium"><span data-t="medium">Middels</span><small data-t="mediumT">5–15 min</small></button>
-    <button class="btn" id="mHard" data-d="hard"><span data-t="hard">Vanskelig</span><small data-t="hardT">15+ min</small></button>
+    <button class="btn" id="mEasy" data-d="easy"><span data-t="easy">Easy</span><small data-t="easyT">2–5 min</small></button>
+    <button class="btn" id="mMedium" data-d="medium"><span data-t="medium">Medium</span><small data-t="mediumT">5–15 min</small></button>
+    <button class="btn" id="mHard" data-d="hard"><span data-t="hard">Hard</span><small data-t="hardT">15–30 min</small></button>
   </div>
-  <button class="btn tl" id="mDaily"><span class="bt"><span data-t="daily">Dagens brett</span><small id="mDailyInfo"></small></span></button>
+  <button class="btn tl" id="mDaily"><span class="bt"><span data-t="daily">Daily puzzle</span><small id="mDailyInfo"></small></span></button>
   <p class="dmeta" id="mStreak"></p>
   <p class="dmeta" id="mNext"></p>
-  <button class="tg" id="mTimed" role="switch" aria-checked="false"><span><span data-t="timed">Tidsmodus</span><small data-t="timedSub">Klokke og beste tider</small></span><i class="sw"></i></button>
-  <button class="tg" id="mShowErr" role="switch" aria-checked="true"><span><span data-t="showErr">Vis feil</span><small data-t="showErrSub">Feil tall markeres med rødt</small></span><i class="sw"></i></button>
-  <div id="mShareRow"><button type="button" class="qrfig" id="mQr"><span class="qrsvg" id="mQrSvg"></span><small data-t="qrLabel">Skann og spill</small></button>
-    <div class="col"><button class="btn tl" id="mShare"><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="share">Del spillet</span></button><button class="btn" id="mRules" data-t="howTo">Slik spiller du</button></div></div>
-  <p class="mfoot" data-t="free">Laget med lidenskap – gratis for alle</p>
+  <button class="tg" id="mTimed" role="switch" aria-checked="false"><span><span data-t="timed">Timed mode</span><small data-t="timedSub">Clock and best times (off by default)</small></span><i class="sw"></i></button>
+  <button class="tg" id="mShowErr" role="switch" aria-checked="true"><span><span data-t="showErr">Show mistakes</span><small data-t="showErrSub">Wrong digits turn red</small></span><i class="sw"></i></button>
+  <div id="mShareRow"><button type="button" class="qrfig" id="mQr"><span class="qrsvg" id="mQrSvg"></span><small data-t="qrLabel">Scan to play</small></button>
+    <div class="col"><button class="btn tl" id="mShare"><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="share">Share the game</span></button><button class="btn" id="mRules" data-t="howTo">How to play</button></div></div>
+  <p class="mfoot" data-t="free">Made with passion – free for everyone</p>
 </div></div>
 
 <div class="ov" id="share" hidden><div class="card" style="text-align:center">
-  <h2 data-t="share">Del spillet</h2>
-  <p data-t="shareTxt" style="margin:2px 0 8px"></p>
+  <h2 data-t="share">Share the game</h2>
+  <p data-t="shareTxt" style="margin:2px 0 8px">Scan the code with your phone camera to open the game.</p>
   <div id="qrBox"></div>
   <div id="shareUrl"></div>
-  <div class="row"><button class="btn tl" id="sNative" data-t="shareBtn"></button><button class="btn" id="sCopy" data-t="copy"></button></div>
-  <button class="btn" id="sClose" data-t="close2"></button>
+  <div class="row"><button class="btn tl" id="sNative" data-t="shareBtn">Share …</button><button class="btn" id="sCopy" data-t="copy">Copy link</button></div>
+  <button class="btn" id="sClose" data-t="close2">Close</button>
 </div></div>
 
 <div class="ov" id="rules" hidden><div class="card" id="rulesCard"></div></div>
@@ -278,18 +279,18 @@ a{color:var(--teal)}
   <div id="winMark"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
   <h2 id="winTitle"></h2>
   <p id="winTxt"></p>
-  <div class="stats"><div><b id="wsTime">–</b><small data-t="time">Tid</small></div><div><b id="wsHints">0</b><small data-t="hintsUsed">Hint brukt</small></div><div><b id="wsErr">0</b><small data-t="mistakes">Feil</small></div></div>
+  <div class="stats"><div><b id="wsTime">–</b><small data-t="time">Time</small></div><div><b id="wsHints">0</b><small data-t="hintsUsed">Hints used</small></div><div><b id="wsErr">0</b><small data-t="mistakes">Mistakes</small></div></div>
   <p id="winBest"></p>
   <p class="dmeta" id="winStreak"></p>
   <p class="dmeta" id="winNext" hidden></p>
-  <button class="btn tl" id="wResult" hidden><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="shareResult">Del resultat</span></button>
-  <button class="btn main" id="wAgain" data-t="again">Nytt brett</button>
-  <div id="winShare"><button type="button" class="qrfig" id="wQr"><span class="qrsvg" id="wQrSvg"></span></button><div class="col"><small data-t="qrShare">Skann og spill – del videre</small><button class="btn tl" id="wShare"><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="share">Del spillet</span></button><button class="btn" id="wMenu" data-t="toMenu">Meny</button></div></div>
+  <button class="btn tl" id="wResult" hidden><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="shareResult">Share result</span></button>
+  <button class="btn main" id="wAgain" data-t="again">New board</button>
+  <div id="winShare"><button type="button" class="qrfig" id="wQr"><span class="qrsvg" id="wQrSvg"></span></button><div class="col"><small data-t="qrShare">Scan to play — pass it on</small><button class="btn tl" id="wShare"><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="share">Share the game</span></button><button class="btn" id="wMenu" data-t="toMenu">Menu</button></div></div>
 </div></div>
 
 <div class="ov" id="confirm" hidden><div class="card" style="text-align:center">
-  <p data-t="confirmNew">Starte et nytt brett? Det nåværende går tapt.</p>
-  <div class="row"><button class="btn" id="cNo" data-t="no">Nei</button><button class="btn main" id="cYes" data-t="yes">Ja</button></div>
+  <p data-t="confirmNew">Start a new board? The current one will be lost.</p>
+  <div class="row"><button class="btn" id="cNo" data-t="no">No</button><button class="btn main" id="cYes" data-t="yes">Yes</button></div>
 </div></div>
 
 <script>
@@ -451,7 +452,7 @@ function normLang(l) { l = String(l || '').toLowerCase(); if (/^(nb|nn|no)\b/.te
 function browserLang() { var ls = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || '']); for (var i = 0; i < ls.length; i++) { var l = normLang(ls[i]); if (l) return l; } return 'no'; }
 var prefs = { lang: browserLang(), mute: false, timed: false, showErr: true };
 try { var pr = JSON.parse(localStorage.getItem(PREF_KEY) || 'null'); if (pr) { if (normLang(pr.lang)) prefs.lang = normLang(pr.lang); prefs.mute = !!pr.mute; prefs.timed = !!pr.timed; prefs.showErr = pr.showErr !== false; } } catch (e) {}
-if (LANGDIR && !(function () { try { return localStorage.getItem(PREF_KEY); } catch (e) { return null; } })()) prefs.lang = LANGDIR;
+if (LANGDIR) prefs.lang = LANGDIR;
 (function () { var m = /[?&]lang=([a-z]{2})/i.exec(location.search); if (m && normLang(m[1])) prefs.lang = normLang(m[1]); })();
 function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) {} }
 
