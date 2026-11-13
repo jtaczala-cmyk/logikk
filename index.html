@@ -885,6 +885,13 @@ function renderBackdrop(p) { cells.forEach(function (c, i) { c.textContent = p[i
 if (/[?&]nobadge=1/.test(location.search)) document.querySelectorAll('.testbadge').forEach(function (b) { b.remove(); }); // clean screenshots of the test build
 if (DEBUG && !/nobadge/.test(location.search)) { var dbg = document.createElement('div'); dbg.id = 'dbg'; dbg.textContent = 'debug'; document.body.appendChild(dbg); }
 paintDailyMeta(); setInterval(paintDailyMeta, 1000);
+try {
+  var wantDaily = /(?:[?&]daily=1(?:&|$))|(?:#daily(?:\b|$))/.test((location.search || '') + (location.hash || ''));
+  if (wantDaily) {
+    if (S && !S.done && S.daily === LG.dayKey()) hide('menu');
+    else ask('medium', true);
+  }
+} catch (e0) {}
 })();
 </script>
 <script src="https://stop60.no/assets/wisdom.js" defer></script>
