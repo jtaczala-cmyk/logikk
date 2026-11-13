@@ -230,6 +230,27 @@ a{color:var(--teal)}
 @media (orientation:landscape) and (max-height:500px){
   #menu .seo-lead{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-height:3.1em}
 }
+/* 2026-11-13: in short landscape, put the board beside the keypad so the 9x9 cells stay thumb-sized */
+@media (orientation:landscape) and (max-height:600px){
+  #app{
+    max-width:none;
+    width:100%;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(168px,34vw);
+    grid-template-rows:auto minmax(0,1fr) auto auto auto;
+    column-gap:8px;
+    align-items:stretch;
+  }
+  #top{grid-column:1/-1;grid-row:1}
+  #boardWrap{grid-column:1;grid-row:2/-1;min-height:0;padding:0}
+  #info{grid-column:2;grid-row:2;min-height:0;align-items:flex-start;flex-wrap:wrap}
+  #tools{grid-column:2;grid-row:3;margin-top:4px;grid-template-columns:repeat(2,1fr);gap:4px}
+  #pad{grid-column:2;grid-row:4;margin-top:4px;grid-template-columns:repeat(3,1fr);gap:4px}
+  #foot{grid-column:2;grid-row:5;padding-top:2px}
+  .k{min-height:44px;font-size:22px}
+  #pad.notes .k{font-size:18px}
+  .tb{min-height:44px}
+}
 </style>
 </head>
 <body>
@@ -934,6 +955,7 @@ if (DEBUG) window.LOGIKK = {
 /* ---------------- boot ---------------- */
 applyLang(); updMute(); build(); paintShareQr();
 var rzT = 0; window.addEventListener('resize', function () { clearTimeout(rzT); rzT = setTimeout(layout, 60); });
+window.addEventListener('orientationchange', function () { clearTimeout(rzT); rzT = setTimeout(layout, 80); });
 layout();
 try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); } catch (e) {}
 S = loadSave();
