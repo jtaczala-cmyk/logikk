@@ -198,6 +198,11 @@ a{color:var(--teal)}
 .rpriv a{color:var(--mut)}
 /* win */
 #win .card{text-align:center;overflow:hidden auto}
+.winGrid{display:block;white-space:pre-wrap;font:600 17px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#12110f;color:#f5f1e8;border-radius:14px;padding:12px 14px;margin:10px 0 8px;text-align:center}
+.winMore{margin:8px 0 12px}
+.winMoreK{margin:0 0 8px;font-size:13px;color:var(--mut,#a8a29e)}
+.winMore a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:3px;padding:8px 12px;border-radius:999px;border:1px solid rgba(245,241,232,.35);color:#f5f1e8;text-decoration:none;font:600 14px/1.2 system-ui,sans-serif}
+.winMore a:active{transform:scale(.98)}
 #winMark{width:64px;height:64px;margin:2px auto 6px;border-radius:16px;background:var(--teal);display:grid;place-items:center;box-shadow:0 0 0 6px rgba(45,212,191,.16)}
 #winMark svg{width:36px;height:36px;fill:none;stroke:#06201d;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 #winTitle{font-size:32px!important}
@@ -283,6 +288,13 @@ a{color:var(--teal)}
   <p id="winBest"></p>
   <p class="dmeta" id="winStreak"></p>
   <p class="dmeta" id="winNext" hidden></p>
+  <pre id="winGrid" class="winGrid" hidden></pre>
+  <nav id="winMore" class="winMore" hidden>
+    <p class="winMoreK" data-t="meanwhile">Until tomorrow’s puzzle</p>
+    <a id="wmLava" href="/lavakule/en/?daily=1">Today’s run in Lava Marble</a>
+    <a id="wmAxi" href="/aximore/en/">Aximore</a>
+    <a id="wmSite" href="https://stop60.no/en/">More games at stop60.no</a>
+  </nav>
   <button class="btn tl" id="wResult" hidden><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="shareResult">Share result</span></button>
   <button class="btn main" id="wAgain" data-t="again">New board</button>
   <div id="winShare"><button type="button" class="qrfig" id="wQr"><span class="qrsvg" id="wQrSvg"></span></button><div class="col"><small data-t="qrShare">Scan to play — pass it on</small><button class="btn tl" id="wShare"><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="share">Share the game</span></button><button class="btn" id="wMenu" data-t="toMenu">Menu</button></div></div>
@@ -474,7 +486,7 @@ var T = {
     daily: 'Dagens brett', dailyInfo: 'Samme brett for alle i dag · {date}', dailyDone: 'Løst i dag ✓ · {date}',
     timed: 'Tidsmodus', timedSub: 'Klokke og beste tider (av som standard)', showErr: 'Vis feil', showErrSub: 'Feil tall markeres med rødt',
     continue: 'Fortsett brettet', contInfo: '{diff} · {n} ruter igjen', free: 'Laget med lidenskap – gratis for alle',
-    qrLabel: 'Skann og spill', qrShare: 'Skann og spill – del videre', share: 'Del spillet', shareTxt: 'Skann koden med kameraet på telefonen for å åpne spillet.', shareBtn: 'Del …', copy: 'Kopier lenke', copied: 'Kopiert!', close2: 'Lukk', shareResult: 'Del resultat', streakLine: '🔥 {cur} {unit} · beste {best}', streak1: 'dag på rad', streakN: 'dager på rad', nextIn: 'Neste brett om {t}',
+    qrLabel: 'Skann og spill', qrShare: 'Skann og spill – del videre', share: 'Del spillet', shareTxt: 'Skann koden med kameraet på telefonen for å åpne spillet.', shareBtn: 'Del …', copy: 'Kopier lenke', copied: 'Kopiert!', close2: 'Lukk', shareResult: 'Kopier resultat', copyResult: 'Kopier resultat', meanwhile: 'Mens du venter på morgendagens brett', moreLava: 'Dagens løp i Lavakule', moreAxi: 'Aximore', moreSite: 'Flere spill på stop60.no', streakLine: '🔥 {cur} {unit} · beste {best}', streak1: 'dag på rad', streakN: 'dager på rad', nextIn: 'Neste brett om {t}',
     winTitle: 'Løst!', winTxt: 'Brettet er løst – nivå: {diff}.', winDaily: 'Dagens brett er løst!', noHintsWin: ' Uten hint!', newBest: 'Ny rekord: {t}!', best: 'Beste tid: {t}', solvedN: 'Løste brett på dette nivået: {n}',
     again: 'Nytt brett', againDaily: 'Nytt middels brett', confirmNew: 'Starte et nytt brett? Det nåværende går tapt.', no: 'Nei', yes: 'Ja',
     hNaked: 'Bare {d} passer i denne ruten.', hHidden: '{d} kan bare stå her i denne {u}.', uRow: 'raden', uCol: 'kolonnen', uBox: 'boksen', hLogic: 'Etter å ha strøket kandidater passer bare {d} her.',
@@ -495,7 +507,7 @@ var T = {
     daily: 'Plansza dnia', dailyInfo: 'Dziś ta sama plansza dla wszystkich · {date}', dailyDone: 'Rozwiązana dziś ✓ · {date}',
     timed: 'Tryb czasowy', timedSub: 'Zegar i najlepsze czasy (domyślnie wyłączony)', showErr: 'Pokazuj błędy', showErrSub: 'Błędne cyfry zaznaczane na czerwono',
     continue: 'Kontynuuj planszę', contInfo: '{diff} · zostało pól: {n}', free: 'Stworzone z pasji – za darmo dla wszystkich',
-    qrLabel: 'Zeskanuj i zagraj', qrShare: 'Zeskanuj i zagraj — podaj dalej', share: 'Udostępnij grę', shareTxt: 'Zeskanuj kod aparatem telefonu, aby otworzyć grę.', shareBtn: 'Udostępnij …', copy: 'Kopiuj link', copied: 'Skopiowano!', close2: 'Zamknij', shareResult: 'Udostępnij wynik', streakLine: '🔥 {cur} {unit} · rekord {best}', streak1: 'dzień z rzędu', streakN: 'dni z rzędu', nextIn: 'Następna plansza za {t}',
+    qrLabel: 'Zeskanuj i zagraj', qrShare: 'Zeskanuj i zagraj — podaj dalej', share: 'Udostępnij grę', shareTxt: 'Zeskanuj kod aparatem telefonu, aby otworzyć grę.', shareBtn: 'Udostępnij …', copy: 'Kopiuj link', copied: 'Skopiowano!', close2: 'Zamknij', shareResult: 'Kopiuj wynik', copyResult: 'Kopiuj wynik', meanwhile: 'Zanim jutro będzie nowa plansza', moreLava: 'Bieg dnia w Lawowej kulce', moreAxi: 'Aximore', moreSite: 'Więcej gier na stop60.no', streakLine: '🔥 {cur} {unit} · rekord {best}', streak1: 'dzień z rzędu', streakN: 'dni z rzędu', nextIn: 'Następna plansza za {t}',
     winTitle: 'Rozwiązane!', winTxt: 'Plansza rozwiązana – poziom: {diff}.', winDaily: 'Plansza dnia rozwiązana!', noHintsWin: ' Bez podpowiedzi!', newBest: 'Nowy rekord: {t}!', best: 'Najlepszy czas: {t}', solvedN: 'Rozwiązane plansze na tym poziomie: {n}',
     again: 'Nowa plansza', againDaily: 'Nowa plansza (średni)', confirmNew: 'Zacząć nową planszę? Obecna zostanie utracona.', no: 'Nie', yes: 'Tak',
     hNaked: 'Do tego pola pasuje tylko {d}.', hHidden: '{d} może stać tylko tutaj w tym {u}.', uRow: 'wierszu', uCol: 'kolumnie', uBox: 'kwadracie 3×3', hLogic: 'Po wykreśleniu kandydatów pasuje tu tylko {d}.',
@@ -516,7 +528,7 @@ var T = {
     daily: 'Daily puzzle', dailyInfo: 'Same board for everyone today · {date}', dailyDone: 'Solved today ✓ · {date}',
     timed: 'Timed mode', timedSub: 'Clock and best times (off by default)', showErr: 'Show mistakes', showErrSub: 'Wrong digits turn red',
     continue: 'Continue board', contInfo: '{diff} · {n} cells left', free: 'Made with passion – free for everyone',
-    qrLabel: 'Scan to play', qrShare: 'Scan to play — pass it on', share: 'Share the game', shareTxt: 'Scan the code with your phone camera to open the game.', shareBtn: 'Share …', copy: 'Copy link', copied: 'Copied!', close2: 'Close', shareResult: 'Share result', streakLine: '🔥 {cur} {unit} · best {best}', streak1: 'day in a row', streakN: 'days in a row', nextIn: 'Next board in {t}',
+    qrLabel: 'Scan to play', qrShare: 'Scan to play — pass it on', share: 'Share the game', shareTxt: 'Scan the code with your phone camera to open the game.', shareBtn: 'Share …', copy: 'Copy link', copied: 'Copied!', close2: 'Close', shareResult: 'Copy result', copyResult: 'Copy result', meanwhile: 'Until tomorrow’s puzzle', moreLava: 'Today’s run in Lava Marble', moreAxi: 'Aximore', moreSite: 'More games at stop60.no', streakLine: '🔥 {cur} {unit} · best {best}', streak1: 'day in a row', streakN: 'days in a row', nextIn: 'Next board in {t}',
     winTitle: 'Solved!', winTxt: 'Board solved – level: {diff}.', winDaily: 'Today\u2019s puzzle is solved!', noHintsWin: ' No hints!', newBest: 'New best: {t}!', best: 'Best time: {t}', solvedN: 'Boards solved at this level: {n}',
     again: 'New board', againDaily: 'New medium board', confirmNew: 'Start a new board? The current one will be lost.', no: 'No', yes: 'Yes',
     hNaked: 'Only {d} fits in this cell.', hHidden: '{d} can only go here in this {u}.', uRow: 'row', uCol: 'column', uBox: '3×3 box', hLogic: 'After eliminating candidates, only {d} fits here.',
@@ -547,6 +559,7 @@ function applyLang() {
   $('fPrivW').hidden = !privOn; $('fPriv').href = privHref;
   $('rulesCard').innerHTML = t('rulesHtml') + '<button class="btn main" id="rClose">' + t('close') + '</button>' + (privOn ? '<p class="rpriv">© 2026 Stop60 · <a class="privl" id="rPriv" href="' + privHref + '">' + t('privacy') + '</a></p>' : '');
   $('rClose').onclick = function () { hide('rules'); };
+  try { paintWinShare(); } catch (e0) {}
 }
 /* ---------------- state ---------------- */
 var S = null;           // current board: {v, diff, seed, daily, puz, sol, cur, notes, hist, hintsUsed, mistakes, el, timed, done, sel, counted}
@@ -581,11 +594,45 @@ function syncStreak() {
 syncStreak();
 if (JSON.stringify(stats.streak) !== storedStreakJson) saveStats();
 function streakUnit(n) { n = Math.abs(+n || 0); var one = prefs.lang === 'pl' ? (n % 10 === 1 && n % 100 !== 11) : n === 1; return t(one ? 'streak1' : 'streakN'); }
-function resultEmoji(hints, mistakes) { var y = Math.max(0, Math.min(5, hints | 0)), r = Math.max(0, Math.min(5 - y, mistakes | 0)); return '🟩'.repeat(5 - y - r) + '🟨'.repeat(y) + '🟥'.repeat(r); }
+function resultEmoji(hints, mistakes) {
+  hints = Math.max(0, hints | 0); mistakes = Math.max(0, mistakes | 0);
+  var cells = [];
+  var i, n = 9;
+  for (i = 0; i < n; i++) cells[i] = '🟩';
+  for (i = 0; i < mistakes && i < n; i++) cells[i] = '🟥';
+  for (i = 0; i < hints && (mistakes + i) < n; i++) cells[mistakes + i] = '🟨';
+  return cells.slice(0, 3).join('') + '\n' + cells.slice(3, 6).join('') + '\n' + cells.slice(6, 9).join('');
+}
 function nextBoardHMS() { var now = new Date(), ms = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now, s = Math.max(0, Math.ceil(ms / 1000)); if (s > 86399) s = 86399; var h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, ss = s % 60; return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(ss).padStart(2, '0'); }
+function sharePath() {
+  var l = (prefs && prefs.lang) || (document.documentElement.lang || 'nb');
+  l = String(l).slice(0, 2).toLowerCase();
+  if (l === 'en') return 'stop60.no/logikk/en';
+  if (l === 'pl') return 'stop60.no/logikk/pl';
+  return 'stop60.no/logikk';
+}
 function resultShareText() {
   var key = (S && S.daily) || LG.dayKey(), cur = (stats.streak && stats.streak.cur) || 0;
-  return t('name') + ' \u2013 ' + t('daily') + ' #' + dayNum(key) + '\n\u23f1 ' + fmtTime((S && S.el) || 0) + ' \u00b7 \uD83D\uDD25 ' + cur + ' ' + streakUnit(cur) + '\n' + resultEmoji(S ? S.hintsUsed : 0, S ? S.mistakes : 0) + '\nstop60.no/logikk';
+  return t('name') + ' \u2013 ' + t('daily') + ' #' + dayNum(key) + '\n' + resultEmoji(S ? S.hintsUsed : 0, S ? S.mistakes : 0) + '\n\u23f1 ' + fmtTime((S && S.el) || 0) + ' \u00b7 \uD83D\uDD25 ' + cur + ' ' + streakUnit(cur) + '\n' + sharePath();
+}
+function paintWinShare() {
+  var grid = $('winGrid'), more = $('winMore'), l = (prefs && prefs.lang) || 'no';
+  if (!grid) return;
+  if (S && S.done && S.daily) {
+    grid.textContent = resultShareText();
+    grid.hidden = false;
+    if (more) {
+      more.hidden = false;
+      var k = more.querySelector('.winMoreK'); if (k) k.textContent = t('meanwhile');
+      var lava = $('wmLava'), axi = $('wmAxi'), site = $('wmSite');
+      if (lava) { lava.href = l === 'en' ? '/lavakule/en/?daily=1' : l === 'pl' ? '/lavakule/pl/?daily=1' : '/lavakule/?daily=1'; lava.textContent = t('moreLava'); }
+      if (axi) { axi.href = l === 'en' ? '/aximore/en/' : l === 'pl' ? '/aximore/pl/' : '/aximore/'; axi.textContent = t('moreAxi'); }
+      if (site) { site.href = l === 'en' ? 'https://stop60.no/en/' : l === 'pl' ? 'https://stop60.no/pl/' : 'https://stop60.no/'; site.textContent = t('moreSite'); }
+    }
+  } else {
+    grid.hidden = true;
+    if (more) more.hidden = true;
+  }
 }
 var shownDay = '';
 function paintDailyMeta() {
@@ -775,11 +822,11 @@ function shareResult() {
   var counted = false;
   function count() { if (!counted) { counted = true; track('share'); } }
   function finish() { shareResult.busy = false; }
-  function markCopied() { count(); var sp = $('wResult').querySelector('span'); sp.textContent = t('copied'); setTimeout(function () { sp.textContent = t('shareResult'); }, 1600); finish(); }
-  var p = null;
-  if (native) { try { p = navigator.share(data); } catch (e) { p = Promise.reject(e); } }
-  if (p) Promise.resolve(p).then(function () { count(); finish(); }).catch(function (err) { if (err && (err.name === 'AbortError' || err.code === 20)) { finish(); return; } copyText(text).then(markCopied, finish); });
-  else copyText(text).then(markCopied, finish);
+  function markCopied() { count(); var sp = $('wResult') && $('wResult').querySelector('span'); if (sp) { sp.textContent = t('copied'); setTimeout(function () { sp.textContent = t('shareResult'); }, 1600); } finish(); }
+  copyText(text).then(function () {
+    markCopied();
+    if (native) { try { navigator.share(data).catch(function () {}); } catch (e1) {} }
+  }, finish);
 }
 $('wResult').onclick = shareResult;
 
@@ -794,7 +841,7 @@ function openWin() {
   $('wsHints').textContent = S.hintsUsed + '/' + HINTS; $('wsErr').textContent = S.mistakes;
   $('winBest').textContent = S.timed ? (S.rec ? t('newBest', { t: fmtTime(st.best) }) : t('best', { t: fmtTime(st.best) })) : t('solvedN', { n: st.won });
   $('wAgain').textContent = S.daily ? t('againDaily') : t('again');
-  $('wResult').hidden = !S.daily;
+  $('wResult').hidden = !S.daily; paintWinShare();
   paintDailyMeta();
   show('win'); confetti();
 }
