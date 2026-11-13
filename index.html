@@ -219,6 +219,17 @@ a{color:var(--teal)}
 @media (min-width:700px) and (min-height:760px){.k{min-height:66px;font-size:30px}.tb{min-height:56px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* stop60 flags v1 */#langBtn{align-content:center;gap:2px;line-height:1}#langBtn::before{content:'';display:block;width:16px;height:11px;margin:0 auto 2px;border-radius:2px;background:no-repeat center/100% 100%;box-shadow:0 0 0 1px rgba(0,0,0,.5);margin:0 auto}html[lang=nb] #langBtn::before,html[lang=no] #langBtn::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 16'%3E%3Crect width='22' height='16' fill='%23ba0c2f'/%3E%3Cpath d='M0 8h22M8 0v16' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M0 8h22M8 0v16' stroke='%2300205b' stroke-width='2'/%3E%3C/svg%3E")}html[lang=en] #langBtn::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30' preserveAspectRatio='none'%3E%3Crect width='60' height='30' fill='%23012169'/%3E%3Cpath d='M0 0l60 30M60 0L0 30' stroke='%23fff' stroke-width='6'/%3E%3Cpath d='M0 0l60 30M60 0L0 30' stroke='%23c8102e' stroke-width='2.4'/%3E%3Cpath d='M30 0v30M0 15h60' stroke='%23fff' stroke-width='10'/%3E%3Cpath d='M30 0v30M0 15h60' stroke='%23c8102e' stroke-width='6'/%3E%3C/svg%3E")}html[lang=pl] #langBtn::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'%3E%3Crect width='16' height='10' fill='%23fff'/%3E%3Crect y='5' width='16' height='5' fill='%23dc143c'/%3E%3C/svg%3E")}
+
+/* 2026-11-13: menu overlay must not steal taps on the top icons; 44px targets; hide phone QR on phones */
+#menu.ov{pointer-events:none}
+#menu.ov .card{pointer-events:auto;overflow:auto;-webkit-overflow-scrolling:touch;max-height:100%}
+.ibtn,#langBtn,#muteBtn,#rulesBtn,#menuBtn{min-width:44px;min-height:44px;width:44px;height:44px}
+@media (max-width:900px), (pointer:coarse){
+  .qrfig, #mQr, #wQr, #winQr{display:none !important}
+}
+@media (orientation:landscape) and (max-height:500px){
+  #menu .seo-lead{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-height:3.1em}
+}
 </style>
 </head>
 <body>
@@ -227,7 +238,7 @@ a{color:var(--teal)}
     <div class="brand"><svg class="mark" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="#12110f" stroke="#f5f1e8" stroke-width="2"/><path d="M10.3 2v26M19.7 2v26M2 10.3h26M2 19.7h26" stroke="rgba(245,241,232,.35)" stroke-width="1.2"/><rect x="11" y="11" width="8" height="8" fill="#e11d2a"/><rect x="20.4" y="2.4" width="7.2" height="7.2" rx="1.6" fill="#2dd4bf"/></svg>
       <div class="bname"><b id="bName">Ren logikk</b><small>Stop60</small></div></div>
     <button class="ibtn" id="langBtn" aria-label="Language">EN</button>
-    <button class="ibtn" id="muteBtn" aria-label="Sound" aria-pressed="false"></button>
+    <button class="ibtn" id="muteBtn" aria-label="Lyd" aria-pressed="false"></button>
     <button class="ibtn" id="rulesBtn" aria-label="Rules"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.3a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.3-2.7 4"/><circle cx="12" cy="17.6" r=".6" fill="currentColor"/></svg></button>
     <button class="ibtn" id="menuBtn" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button>
   </header>
@@ -245,7 +256,7 @@ a{color:var(--teal)}
     <button class="tb" id="tHint"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span data-t="hint">Hint</span><i class="badge" id="hintBadge">3</i></button>
   </section>
   <section id="pad" aria-label="1–9"></section>
-  <footer id="foot">© 2026 Stop60 · All rights reserved<span id="fPrivW" hidden> · <a class="privl" id="fPriv" href="personvern/" data-t="privacy">Personvern</a></span></footer>
+  <footer id="foot">© 2026 Stop60 · <span data-t="rights">Alle rettigheter forbeholdt</span><span id="fPrivW" hidden> · <a class="privl" id="fPriv" href="personvern/" data-t="privacy">Personvern</a></span></footer>
 </div>
 
 <div class="ov" id="menu" hidden><div class="card">
@@ -486,7 +497,7 @@ var T = {
     daily: 'Dagens brett', dailyInfo: 'Samme brett for alle i dag · {date}', dailyDone: 'Løst i dag ✓ · {date}',
     timed: 'Tidsmodus', timedSub: 'Klokke og beste tider (av som standard)', showErr: 'Vis feil', showErrSub: 'Feil tall markeres med rødt',
     continue: 'Fortsett brettet', contInfo: '{diff} · {n} ruter igjen', free: 'Laget med lidenskap – gratis for alle',
-    qrLabel: 'Skann og spill', qrShare: 'Skann og spill – del videre', share: 'Del spillet', shareTxt: 'Skann koden med kameraet på telefonen for å åpne spillet.', shareBtn: 'Del …', copy: 'Kopier lenke', copied: 'Kopiert!', close2: 'Lukk', shareResult: 'Kopier resultat', copyResult: 'Kopier resultat', meanwhile: 'Mens du venter på morgendagens brett', moreLava: 'Dagens løp i Lavakule', moreAxi: 'Aximore', moreSite: 'Flere spill på stop60.no', streakLine: '🔥 {cur} {unit} · beste {best}', streak1: 'dag på rad', streakN: 'dager på rad', nextIn: 'Neste brett om {t}',
+    qrLabel: 'Skann og spill', qrShare: 'Skann og spill – del videre', share: 'Del spillet', shareTxt: 'Skann koden med kameraet på telefonen for å åpne spillet.', shareBtn: 'Del …', copy: 'Kopier lenke', copied: 'Kopiert!', close2: 'Lukk', rights: 'Alle rettigheter forbeholdt', shareResult: 'Kopier resultat', copyResult: 'Kopier resultat', meanwhile: 'Mens du venter på morgendagens brett', moreLava: 'Dagens løp i Lavakule', moreAxi: 'Aximore', moreSite: 'Flere spill på stop60.no', streakLine: '🔥 {cur} {unit} · beste {best}', streak1: 'dag på rad', streakN: 'dager på rad', nextIn: 'Neste brett om {t}',
     winTitle: 'Løst!', winTxt: 'Brettet er løst – nivå: {diff}.', winDaily: 'Dagens brett er løst!', noHintsWin: ' Uten hint!', newBest: 'Ny rekord: {t}!', best: 'Beste tid: {t}', solvedN: 'Løste brett på dette nivået: {n}',
     again: 'Nytt brett', againDaily: 'Nytt middels brett', confirmNew: 'Starte et nytt brett? Det nåværende går tapt.', no: 'Nei', yes: 'Ja',
     hNaked: 'Bare {d} passer i denne ruten.', hHidden: '{d} kan bare stå her i denne {u}.', uRow: 'raden', uCol: 'kolonnen', uBox: 'boksen', hLogic: 'Etter å ha strøket kandidater passer bare {d} her.',
@@ -507,7 +518,7 @@ var T = {
     daily: 'Plansza dnia', dailyInfo: 'Dziś ta sama plansza dla wszystkich · {date}', dailyDone: 'Rozwiązana dziś ✓ · {date}',
     timed: 'Tryb czasowy', timedSub: 'Zegar i najlepsze czasy (domyślnie wyłączony)', showErr: 'Pokazuj błędy', showErrSub: 'Błędne cyfry zaznaczane na czerwono',
     continue: 'Kontynuuj planszę', contInfo: '{diff} · zostało pól: {n}', free: 'Stworzone z pasji – za darmo dla wszystkich',
-    qrLabel: 'Zeskanuj i zagraj', qrShare: 'Zeskanuj i zagraj — podaj dalej', share: 'Udostępnij grę', shareTxt: 'Zeskanuj kod aparatem telefonu, aby otworzyć grę.', shareBtn: 'Udostępnij …', copy: 'Kopiuj link', copied: 'Skopiowano!', close2: 'Zamknij', shareResult: 'Kopiuj wynik', copyResult: 'Kopiuj wynik', meanwhile: 'Zanim jutro będzie nowa plansza', moreLava: 'Bieg dnia w Lawowej kulce', moreAxi: 'Aximore', moreSite: 'Więcej gier na stop60.no', streakLine: '🔥 {cur} {unit} · rekord {best}', streak1: 'dzień z rzędu', streakN: 'dni z rzędu', nextIn: 'Następna plansza za {t}',
+    qrLabel: 'Zeskanuj i zagraj', qrShare: 'Zeskanuj i zagraj — podaj dalej', share: 'Udostępnij grę', shareTxt: 'Zeskanuj kod aparatem telefonu, aby otworzyć grę.', shareBtn: 'Udostępnij …', copy: 'Kopiuj link', copied: 'Skopiowano!', close2: 'Zamknij', rights: 'Wszelkie prawa zastrzeżone', shareResult: 'Kopiuj wynik', copyResult: 'Kopiuj wynik', meanwhile: 'Zanim jutro będzie nowa plansza', moreLava: 'Bieg dnia w Lawowej kulce', moreAxi: 'Aximore', moreSite: 'Więcej gier na stop60.no', streakLine: '🔥 {cur} {unit} · rekord {best}', streak1: 'dzień z rzędu', streakN: 'dni z rzędu', nextIn: 'Następna plansza za {t}',
     winTitle: 'Rozwiązane!', winTxt: 'Plansza rozwiązana – poziom: {diff}.', winDaily: 'Plansza dnia rozwiązana!', noHintsWin: ' Bez podpowiedzi!', newBest: 'Nowy rekord: {t}!', best: 'Najlepszy czas: {t}', solvedN: 'Rozwiązane plansze na tym poziomie: {n}',
     again: 'Nowa plansza', againDaily: 'Nowa plansza (średni)', confirmNew: 'Zacząć nową planszę? Obecna zostanie utracona.', no: 'Nie', yes: 'Tak',
     hNaked: 'Do tego pola pasuje tylko {d}.', hHidden: '{d} może stać tylko tutaj w tym {u}.', uRow: 'wierszu', uCol: 'kolumnie', uBox: 'kwadracie 3×3', hLogic: 'Po wykreśleniu kandydatów pasuje tu tylko {d}.',
@@ -528,7 +539,7 @@ var T = {
     daily: 'Daily puzzle', dailyInfo: 'Same board for everyone today · {date}', dailyDone: 'Solved today ✓ · {date}',
     timed: 'Timed mode', timedSub: 'Clock and best times (off by default)', showErr: 'Show mistakes', showErrSub: 'Wrong digits turn red',
     continue: 'Continue board', contInfo: '{diff} · {n} cells left', free: 'Made with passion – free for everyone',
-    qrLabel: 'Scan to play', qrShare: 'Scan to play — pass it on', share: 'Share the game', shareTxt: 'Scan the code with your phone camera to open the game.', shareBtn: 'Share …', copy: 'Copy link', copied: 'Copied!', close2: 'Close', shareResult: 'Copy result', copyResult: 'Copy result', meanwhile: 'Until tomorrow’s puzzle', moreLava: 'Today’s run in Lava Marble', moreAxi: 'Aximore', moreSite: 'More games at stop60.no', streakLine: '🔥 {cur} {unit} · best {best}', streak1: 'day in a row', streakN: 'days in a row', nextIn: 'Next board in {t}',
+    qrLabel: 'Scan to play', qrShare: 'Scan to play — pass it on', share: 'Share the game', shareTxt: 'Scan the code with your phone camera to open the game.', shareBtn: 'Share …', copy: 'Copy link', copied: 'Copied!', close2: 'Close', rights: 'All rights reserved', shareResult: 'Copy result', copyResult: 'Copy result', meanwhile: 'Until tomorrow’s puzzle', moreLava: 'Today’s run in Lava Marble', moreAxi: 'Aximore', moreSite: 'More games at stop60.no', streakLine: '🔥 {cur} {unit} · best {best}', streak1: 'day in a row', streakN: 'days in a row', nextIn: 'Next board in {t}',
     winTitle: 'Solved!', winTxt: 'Board solved – level: {diff}.', winDaily: 'Today\u2019s puzzle is solved!', noHintsWin: ' No hints!', newBest: 'New best: {t}!', best: 'Best time: {t}', solvedN: 'Boards solved at this level: {n}',
     again: 'New board', againDaily: 'New medium board', confirmNew: 'Start a new board? The current one will be lost.', no: 'No', yes: 'Yes',
     hNaked: 'Only {d} fits in this cell.', hHidden: '{d} can only go here in this {u}.', uRow: 'row', uCol: 'column', uBox: '3×3 box', hLogic: 'After eliminating candidates, only {d} fits here.',
@@ -941,7 +952,7 @@ try {
 } catch (e0) {}
 })();
 </script>
-<script src="https://stop60.no/assets/wisdom.js" defer></script>
-<script>addEventListener("load",function(){window.StopWisdom&&StopWisdom.show({before:document.getElementById("mContinue")})});</script>
+<script src="https://stop60.no/assets/wisdom.js?v=2" defer></script>
+<script>addEventListener("load",function(){window.StopWisdom&&StopWisdom.show({after:document.getElementById("mDaily")})});</script>
 </body>
 </html>
