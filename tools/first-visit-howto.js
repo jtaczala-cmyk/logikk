@@ -162,15 +162,27 @@ function runPage(html, opts) {
   };
 }
 
-function freshBoard(lg, today) {
-  const g = lg.generate('medium', 'daily-' + today);
+function loadDailyDiff(src) {
+  const start = src.indexOf('var DAILY_EASY_FROM = ');
+  const end = src.indexOf('function showSolvedDaily');
+  assert(start > 0 && end > start, 'dailyDiff helper missing');
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(src.slice(start, end) + '\nthis.dailyDiff = dailyDiff;', ctx);
+  assert(typeof ctx.dailyDiff === 'function', 'dailyDiff did not load');
+  return ctx.dailyDiff;
+}
+
+function freshBoard(lg, today, diff) {
+  const g = lg.generate(diff, 'daily-' + today);
   assert(g && g.solution && g.solution.length === 81, 'generator returned a board');
+  assert(g.diff === diff && g.seed === 'daily-' + today, 'official daily was not generated at ' + diff);
   return g;
 }
 
 function baseSave(g, today, extra) {
   const s = {
-    v: 1, diff: 'medium', seed: today, daily: today,
+    v: 1, diff: g.diff, seed: today, daily: today,
     puz: g.puzzle.slice(), sol: g.solution.slice(), cur: g.puzzle.slice(),
     notes: g.puzzle.map(function () { return 0; }), hist: [],
     hintsUsed: 0, mistakes: 0, el: 0, timed: false, done: false, sel: -1, counted: 0
@@ -236,10 +248,11 @@ function main() {
 
   const today = dayKey();
   const html = htmls[0];
+  const dailyDiff = loadDailyDiff(src);
   const lgCtx = {};
   vm.createContext(lgCtx);
   vm.runInContext(src.slice(0, src.indexOf("(function () {\n'use strict';")) + '\nthis.LG = LG;', lgCtx);
-  const g = freshBoard(lgCtx.LG, today);
+  const g = freshBoard(lgCtx.LG, today, dailyDiff(today));
 
   // 1. Empty storage: auto-daily, then the short overlay. One start event. Board stays.
   let r = boot(html, {});
@@ -248,7 +261,7 @@ function main() {
   assert(howtoOpen(r), 'first visit did not show the how-to');
   assert(r.elements.menu.hidden === true && r.elements.win.hidden === true && r.elements.confirm.hidden === true, 'first visit opened another overlay');
   const st = state(r.sandbox);
-  assert(st && st.done === false && st.daily === today, 'first visit did not keep today\'s daily');
+  assert(st && st.done === false && st.daily === today && st.diff === dailyDiff(today), 'first visit did not keep today\'s daily at ' + dailyDiff(today));
   assert(r.elements.howtoH.textContent === 'Slik spiller du', 'how-to heading');
   assert(r.elements.howtoPlay.textContent === 'Spill' && r.elements.howtoPlay.getAttribute('aria-label') === 'Spill', 'Play button name');
   assert(r.elements.howtoPlay.focused === true, 'Play was not focused');
@@ -289,7 +302,8 @@ function main() {
   r = boot(html, { logikk_prefs_v1: resumePrefs, logikk_stats_v1: JSON.stringify(solvedStats) });
   assert(!howtoOpen(r), 'solved daily showed the how-to');
   assert(r.sandbox.__newBoards.length === 0 && starts(r.sandbox).length === 0 && gc(r.sandbox).indexOf('finish-daily') < 0, 'solved daily tracked a game');
-  assert(state(r.sandbox).done === true && state(r.sandbox).daily === today, 'solved daily was not restored');
+  assert(state(r.sandbox).done === true && state(r.sandbox).daily === today && state(r.sandbox).diff === dailyDiff(today), 'solved daily was not restored at ' + dailyDiff(today));
+  assert(JSON.stringify(state(r.sandbox).puz) === JSON.stringify(g.puzzle), 'solved daily was not today\'s official board');
   assert(r.elements.win.hidden === false && r.elements.menu.hidden === true, 'solved daily did not keep the win card');
   const share = r.sandbox.LOGIKK.shareText().split('\n');
   const shareAll = share.join('\n');
