@@ -251,6 +251,10 @@ a{color:var(--teal)}
   #pad.notes .k{font-size:18px}
   .tb{min-height:44px}
 }
+/* first-visit how-to: short card, scroll inside short landscape, Play stays tappable */
+#howto .card{overflow-x:hidden;overflow-y:auto}
+#howto .pts{overflow-wrap:break-word}
+#howto #howtoPlay{position:sticky;bottom:0;z-index:1}
 </style>
 </head>
 <body>
@@ -311,6 +315,12 @@ a{color:var(--teal)}
 </div></div>
 
 <div class="ov" id="rules" hidden><div class="card" id="rulesCard"></div></div>
+
+<div class="ov" id="howto" role="dialog" aria-modal="true" aria-labelledby="howtoH" hidden><div class="card">
+  <h2 id="howtoH" data-t="howTo">How to play</h2>
+  <ul class="pts" id="howtoPts"></ul>
+  <button class="btn main" type="button" id="howtoPlay" data-t="playNow">Play</button>
+</div></div>
 
 <div class="ov" id="win" hidden><canvas id="confetti"></canvas><div class="card">
   <div id="winMark"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
@@ -494,8 +504,8 @@ var $ = function (id) { return document.getElementById(id); };
 var LANGS = ['no', 'pl', 'en'], LANG_NAME = { no: 'Norsk', pl: 'Polski', en: 'English' };
 function normLang(l) { l = String(l || '').toLowerCase(); if (/^(nb|nn|no)\b/.test(l)) return 'no'; if (/^pl\b/.test(l)) return 'pl'; if (/^en\b/.test(l)) return 'en'; return null; }
 function browserLang() { var ls = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || '']); for (var i = 0; i < ls.length; i++) { var l = normLang(ls[i]); if (l) return l; } return 'no'; }
-var prefs = { lang: browserLang(), mute: false, timed: false, showErr: true };
-try { var pr = JSON.parse(localStorage.getItem(PREF_KEY) || 'null'); if (pr) { if (normLang(pr.lang)) prefs.lang = normLang(pr.lang); prefs.mute = !!pr.mute; prefs.timed = !!pr.timed; prefs.showErr = pr.showErr !== false; } } catch (e) {}
+var prefs = { lang: browserLang(), mute: false, timed: false, showErr: true, seenHowTo: false };
+try { var pr = JSON.parse(localStorage.getItem(PREF_KEY) || 'null'); if (pr) { if (normLang(pr.lang)) prefs.lang = normLang(pr.lang); prefs.mute = !!pr.mute; prefs.timed = !!pr.timed; prefs.showErr = pr.showErr !== false; prefs.seenHowTo = !!pr.seenHowTo; } } catch (e) {}
 if (LANGDIR) prefs.lang = LANGDIR;
 (function () { var m = /[?&]lang=([a-z]{2})/i.exec(location.search); if (m && normLang(m[1])) prefs.lang = normLang(m[1]); })();
 function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) {} }
@@ -512,7 +522,7 @@ var PTS = {
   en: [['Pure logic', 'No element of chance and no time pressure (unless you play in timed mode).'], ['Short rounds', 'Easy boards usually take 2–5 minutes.'], ['Simple rules', 'Fill in the digits 1 to 9 so that none repeats in any row, column or 3×3 box.']]
 };
 var T = {
-  no: { name: 'Ren logikk', tagline: 'Tallpuslespill', test: 'TESTVERSJON', privacy: 'Personvern', sndLbl: 'Lyd', howTo: 'Slik spiller du', toMenu: 'Meny', close: 'Skjønner',
+  no: { name: 'Ren logikk', tagline: 'Tallpuslespill', test: 'TESTVERSJON', privacy: 'Personvern', sndLbl: 'Lyd', howTo: 'Slik spiller du', playNow: 'Spill', toMenu: 'Meny', close: 'Skjønner',
     undo: 'Angre', erase: 'Visk ut', notes: 'Notater', hint: 'Hint', on: 'på', mistakes: 'Feil', hintsLeft: 'Hint', time: 'Tid', timeOff: 'Tid (av)', hintsUsed: 'Hint brukt',
     easy: 'Lett', medium: 'Middels', hard: 'Vanskelig', easyT: '2–5 min', mediumT: '5–15 min', hardT: '15–30 min', dailyChip: 'Dagens',
     daily: 'Dagens brett', dailyInfo: 'Samme brett for alle i dag · {date}', dailyDone: 'Løst i dag ✓ · {date}',
@@ -533,7 +543,7 @@ var T = {
       ['Lagring', 'Brettet lagres automatisk på enheten, så du kan fortsette senere. Når siden først er lastet, virker spillet også uten nett.']],
       about: 'Ren logikk er inspirert av det klassiske tallplasseringspuslespillet. Laget med lidenskap og gratis for alle – uten reklame og uten konto.' })
   },
-  pl: { name: 'Czysta logika', tagline: 'Łamigłówka liczbowa', test: 'WERSJA TESTOWA', privacy: 'Prywatność', sndLbl: 'Dźwięk', howTo: 'Jak grać', toMenu: 'Menu', close: 'Rozumiem',
+  pl: { name: 'Czysta logika', tagline: 'Łamigłówka liczbowa', test: 'WERSJA TESTOWA', privacy: 'Prywatność', sndLbl: 'Dźwięk', howTo: 'Jak grać', playNow: 'Zagraj', toMenu: 'Menu', close: 'Rozumiem',
     undo: 'Cofnij', erase: 'Wymaż', notes: 'Notatki', hint: 'Podpowiedź', on: 'wł.', mistakes: 'Błędy', hintsLeft: 'Podpowiedzi', time: 'Czas', timeOff: 'Czas (wył.)', hintsUsed: 'Podpowiedzi',
     easy: 'Łatwy', medium: 'Średni', hard: 'Trudny', easyT: '2–5 min', mediumT: '5–15 min', hardT: '15–30 min', dailyChip: 'Dnia',
     daily: 'Plansza dnia', dailyInfo: 'Dziś ta sama plansza dla wszystkich · {date}', dailyDone: 'Rozwiązana dziś ✓ · {date}',
@@ -554,7 +564,7 @@ var T = {
       ['Zapis', 'Plansza zapisuje się automatycznie na urządzeniu, więc możesz wrócić do niej później. Po pierwszym wczytaniu gra działa też bez internetu.']],
       about: 'Czysta logika jest inspirowana klasyczną łamigłówką polegającą na wpisywaniu cyfr. Stworzona z pasji i darmowa dla wszystkich – bez reklam i bez konta.' })
   },
-  en: { name: 'Pure Logic', tagline: 'Number puzzle', test: 'TEST VERSION', privacy: 'Privacy', sndLbl: 'Sound', howTo: 'How to play', toMenu: 'Menu', close: 'Got it',
+  en: { name: 'Pure Logic', tagline: 'Number puzzle', test: 'TEST VERSION', privacy: 'Privacy', sndLbl: 'Sound', howTo: 'How to play', playNow: 'Play', toMenu: 'Menu', close: 'Got it',
     undo: 'Undo', erase: 'Erase', notes: 'Notes', hint: 'Hint', on: 'on', mistakes: 'Mistakes', hintsLeft: 'Hints', time: 'Time', timeOff: 'Time (off)', hintsUsed: 'Hints used',
     easy: 'Easy', medium: 'Medium', hard: 'Hard', easyT: '2–5 min', mediumT: '5–15 min', hardT: '15–30 min', dailyChip: 'Daily',
     daily: 'Daily puzzle', dailyInfo: 'Same board for everyone today · {date}', dailyDone: 'Solved today ✓ · {date}',
@@ -586,18 +596,22 @@ function applyLang() {
   $('langBtn').textContent = prefs.lang.toUpperCase(); $('langBtn').setAttribute('aria-label', 'Language / Språk / Język: ' + LANG_NAME[prefs.lang]);
   $('bName').textContent = t('name'); $('mTitle').textContent = t('name'); $('board').setAttribute('aria-label', t('boardLbl'));
   $('mPts').innerHTML = PTS[prefs.lang].map(function (p, i) { return '<li><span class="n">' + (i + 1) + '</span><span><b>' + p[0] + '</b>' + p[1] + '</span></li>'; }).join('');
+  $('howtoH').textContent = t('howTo');
+  $('howtoPts').innerHTML = $('mPts').innerHTML;
+  $('howtoPlay').textContent = t('playNow');
+  $('howtoPlay').setAttribute('aria-label', t('playNow'));
   document.title = LAUNCH ? TITLES[prefs.lang] : t('name') + ' — ' + { no: 'testversjon', pl: 'wersja testowa', en: 'test version' }[prefs.lang];
   var privHref = gameBase() + { no: 'personvern/', pl: 'personvern/', en: 'en/privacy/' }[prefs.lang], privOn = LAUNCH;
   $('fPrivW').hidden = !privOn; $('fPriv').href = privHref;
   $('rulesCard').innerHTML = t('rulesHtml') + '<button class="btn main" id="rClose">' + t('close') + '</button>' + (privOn ? '<p class="rpriv">© 2026 Stop60 · <a class="privl" id="rPriv" href="' + privHref + '">' + t('privacy') + '</a></p>' : '');
-  $('rClose').onclick = function () { hide('rules'); };
+  $('rClose').onclick = function () { hide('rules'); markSeenHowTo(); };
   try { paintWinShare(); } catch (e0) {}
 }
 /* ---------------- state ---------------- */
 var S = null;           // current board: {v, diff, seed, daily, puz, sol, cur, notes, hist, hintsUsed, mistakes, el, timed, done, sel, counted}
 var notesMode = false, pickDigit = 0, HINTS = 3;
 function show(id) { $(id).hidden = false; } function hide(id) { $(id).hidden = true; }
-function anyOverlay() { return ['menu', 'share', 'rules', 'win', 'confirm'].some(function (id) { return !$(id).hidden; }); }
+function anyOverlay() { return ['menu', 'share', 'rules', 'win', 'confirm', 'howto'].some(function (id) { return !$(id).hidden; }); }
 function save() { try { if (S) localStorage.setItem(SAVE_KEY, JSON.stringify(S)); else localStorage.removeItem(SAVE_KEY); } catch (e) {} }
 function validSave(x) { if (!x || x.v !== 1 || !Array.isArray(x.puz) || x.puz.length !== 81 || !Array.isArray(x.sol) || x.sol.length !== 81 || !Array.isArray(x.cur) || x.cur.length !== 81 || !Array.isArray(x.notes)) return false;
   for (var i = 0; i < 81; i++) { if (x.puz[i] && x.puz[i] !== x.sol[i]) return false; if (x.puz[i] && x.cur[i] !== x.puz[i]) return false; if (!(x.sol[i] >= 1 && x.sol[i] <= 9)) return false; }
@@ -645,7 +659,7 @@ function sharePath() {
 }
 function resultShareText() {
   var key = (S && S.daily) || LG.dayKey(), cur = (stats.streak && stats.streak.cur) || 0;
-  return t('name') + ' \u2013 ' + t('daily') + ' #' + dayNum(key) + '\n' + resultEmoji(S ? S.hintsUsed : 0, S ? S.mistakes : 0) + '\n\u23f1 ' + fmtTime((S && S.el) || 0) + ' \u00b7 \uD83D\uDD25 ' + cur + ' ' + streakUnit(cur) + '\n' + sharePath();
+  return t('name') + ' #' + dayNum(key) + '\n' + resultEmoji(S ? S.hintsUsed : 0, S ? S.mistakes : 0) + '\n\u23f1 ' + fmtTime((S && S.el) || 0) + ' \u00b7 \uD83D\uDD25 ' + cur + ' ' + streakUnit(cur) + '\n' + sharePath();
 }
 function paintWinShare() {
   var grid = $('winGrid'), more = $('winMore'), l = (prefs && prefs.lang) || 'no';
@@ -845,7 +859,21 @@ $('mDaily').onclick = function () { ac(); if (todayDailySolved()) { showSolvedDa
 $('mContinue').onclick = function () { ac(); hide('menu'); clockLast = Date.now(); if (!clockT) clockStart(); render(); };
 $('mTimed').onclick = function () { prefs.timed = !prefs.timed; savePrefs(); setSw('mTimed', prefs.timed); if (S && !S.done) { S.timed = prefs.timed; save(); render(); } };
 $('mShowErr').onclick = function () { prefs.showErr = !prefs.showErr; savePrefs(); setSw('mShowErr', prefs.showErr); render(); };
-$('mRules').onclick = function () { show('rules'); };
+function markSeenHowTo() { if (prefs.seenHowTo) return; prefs.seenHowTo = true; savePrefs(); }
+function dismissHowTo() { if ($('howto').hidden) return; hide('howto'); markSeenHowTo(); clockLast = Date.now(); }
+function maybeHowTo() { // one-time short how-to over the already started daily; never a second board
+  if (prefs.seenHowTo || todayDailySolved()) return;
+  if (!$('confirm').hidden || !$('win').hidden) return;
+  if (!(S && !S.done && S.daily === LG.dayKey())) return;
+  var known = false, d;
+  for (d in stats.daily) { if (Object.prototype.hasOwnProperty.call(stats.daily, d)) { known = true; break; } }
+  if (known) return;
+  if (['easy', 'medium', 'hard'].some(function (k) { return !!(stats[k] && stats[k].won > 0); })) return;
+  show('howto');
+  var b = $('howtoPlay'); if (b && b.focus) try { b.focus(); } catch (e) {}
+}
+$('howtoPlay').onclick = function () { ac(); dismissHowTo(); };
+$('mRules').onclick = function () { show('rules'); markSeenHowTo(); };
 $('cYes').onclick = function () { hide('confirm'); if (pending) newBoard(pending[0], pending[1]); pending = null; };
 $('cNo').onclick = function () { hide('confirm'); pending = null; };
 
@@ -910,14 +938,14 @@ function confetti() {
 
 /* ---------------- header + keyboard ---------------- */
 $('menuBtn').onclick = function () { openMenu(); };
-$('rulesBtn').onclick = function () { show('rules'); };
+$('rulesBtn').onclick = function () { show('rules'); markSeenHowTo(); };
 $('langBtn').onclick = function () { prefs.lang = LANGS[(LANGS.indexOf(prefs.lang) + 1) % LANGS.length]; savePrefs(); applyLang(); paintShareQr(); render(); if (!$('menu').hidden) openMenu(); if (!$('win').hidden) openWin(); };
 var SVG_ON = '<svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.6 7.6 0 0 1 0 11"/></svg>', SVG_OFF = '<svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
 function updMute() { $('muteBtn').innerHTML = prefs.mute ? SVG_OFF : SVG_ON; $('muteBtn').setAttribute('aria-pressed', prefs.mute ? 'true' : 'false'); }
 $('muteBtn').onclick = function () { prefs.mute = !prefs.mute; savePrefs(); updMute(); if (!prefs.mute) { ac(); sfx('place'); } };
 $('tUndo').onclick = undo; $('tErase').onclick = erase; $('tNotes').onclick = toggleNotes; $('tHint').onclick = useHint;
 document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape') { ['share', 'rules', 'confirm'].forEach(function (id) { if (!$(id).hidden) hide(id); }); return; }
+  if (e.key === 'Escape') { if (!$('howto').hidden) { dismissHowTo(); return; } if (!$('rules').hidden) markSeenHowTo(); ['share', 'rules', 'confirm'].forEach(function (id) { if (!$(id).hidden) hide(id); }); return; }
   if (anyOverlay() || !S || e.altKey || e.metaKey && e.key !== 'z') return;
   var k = e.key, i = S.sel < 0 ? 40 : S.sel;
   if (/^[1-9]$/.test(k)) { input(+k); e.preventDefault(); }
@@ -983,7 +1011,7 @@ function showStartMenu() { if (!S) { S = null; } openMenu(); if (S) render(); el
 S = loadSave();
 if (S && !S.done) { notesMode = false; render(); clockStart(); } // a board in progress continues right away (like Hefau), practice included
 else if (todayDailySolved()) { try { showSolvedDaily(); } catch (e1) { showStartMenu(); } } // solved daily: filled grid + win card, no new game
-else { try { ask('medium', true); } catch (e1) { showStartMenu(); } } // auto-daily-boot: same path as Dagens brett / ?daily=1
+else { try { ask('medium', true); } catch (e1) { showStartMenu(); } try { maybeHowTo(); } catch (e2) {} } // auto-daily-boot: same path as Dagens brett / ?daily=1, then a one-time how-to
 if (/[?&]nobadge=1/.test(location.search)) document.querySelectorAll('.testbadge').forEach(function (b) { b.remove(); }); // clean screenshots of the test build
 if (DEBUG && !/nobadge/.test(location.search)) { var dbg = document.createElement('div'); dbg.id = 'dbg'; dbg.textContent = 'debug'; document.body.appendChild(dbg); }
 paintDailyMeta(); setInterval(paintDailyMeta, 1000);
