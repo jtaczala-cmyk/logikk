@@ -77,13 +77,14 @@ a{color:var(--teal)}
 .ibtn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .ibtn:active{transform:scale(.94)}
 /* info strip */
-#info{display:flex;align-items:center;gap:8px;min-height:30px;font-size:13px;color:var(--mut)}
-#info .chip{font:600 12px/1 var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--ink);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:6px 10px}
+#info{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;min-width:0;min-height:30px;font-size:13px;color:var(--mut)}
+#info .chip{font:600 12px/1 var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--ink);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:6px 10px;max-width:100%}
 #info .chip.daily{color:var(--teal2);background:var(--tealbg);border-color:rgba(45,212,191,.35)}
-#info .sp{flex:1}
-#info .st{display:flex;align-items:center;gap:5px;white-space:nowrap}
+#info .sp{flex:1 0 8px}
+#info .st{display:flex;align-items:center;gap:5px;white-space:nowrap;flex:0 0 auto}
 #info .st b{color:var(--ink);font:600 14px/1 var(--disp);letter-spacing:.05em}
 #info .st.err b{color:var(--pink)}
+#iLeft{display:inline-block;min-width:1.5em;text-align:end;font-variant-numeric:tabular-nums}
 #clock{font:600 16px/1 var(--disp);letter-spacing:.08em;color:var(--ink);min-width:52px;text-align:right}
 /* board */
 #boardWrap{position:relative;flex:1 1 0;min-height:0;display:grid;place-items:center;padding:2px 0}
@@ -254,6 +255,8 @@ a{color:var(--teal)}
 /* 2026-11-14: portrait phones — 3×3 pad so each key is at least 44×44px. Short screens give a little board height to the pad. */
 @media (orientation:portrait) and (max-width:447px){
   #top,#info,#tools,#pad,#foot{flex-shrink:0}
+  #info{justify-content:flex-end}
+  #info .chip{margin-right:auto}
   #tools{margin-top:4px;gap:4px}
   #pad{grid-template-columns:repeat(3,1fr);gap:4px;margin-top:4px}
   .k{min-height:44px;font-size:24px}
@@ -279,6 +282,7 @@ a{color:var(--teal)}
   </header>
   <section id="info">
     <span class="chip" id="iDiff"></span><span class="sp"></span>
+    <span class="st" id="iLeftW" aria-label="0 zostało"><b id="iLeft">0</b> <span data-t="left">zostało</span></span>
     <span class="st err" id="iErrW"><span data-t="mistakes">Błędy</span> <b id="iErr">0</b></span>
     <span class="st" id="iHintW"><span data-t="hintsLeft">Podpowiedzi</span> <b id="iHint">3</b></span>
     <span id="clock" hidden>0:00</span>
@@ -533,7 +537,7 @@ var PTS = {
 };
 var T = {
   no: { name: 'Ren logikk', tagline: 'Tallpuslespill', test: 'TESTVERSJON', privacy: 'Personvern', sndLbl: 'Lyd', howTo: 'Slik spiller du', playNow: 'Spill', toMenu: 'Meny', close: 'Skjønner',
-    undo: 'Angre', erase: 'Visk ut', notes: 'Notater', hint: 'Hint', on: 'på', mistakes: 'Feil', hintsLeft: 'Hint', time: 'Tid', timeOff: 'Tid (av)', hintsUsed: 'Hint brukt',
+    undo: 'Angre', erase: 'Visk ut', notes: 'Notater', hint: 'Hint', on: 'på', mistakes: 'Feil', hintsLeft: 'Hint', left: 'igjen', leftLbl: '{n} igjen', time: 'Tid', timeOff: 'Tid (av)', hintsUsed: 'Hint brukt',
     easy: 'Lett', medium: 'Middels', hard: 'Vanskelig', easyT: '2–5 min', mediumT: '5–15 min', hardT: '15–30 min', dailyChip: 'Dagens',
     daily: 'Dagens brett', dailyInfo: 'Samme brett for alle i dag · {date}', dailyDone: 'Løst i dag ✓ · {date}',
     timed: 'Tidsmodus', timedSub: 'Klokke og beste tider (av som standard)', showErr: 'Vis feil', showErrSub: 'Feil tall markeres med rødt',
@@ -554,7 +558,7 @@ var T = {
       about: 'Ren logikk er inspirert av det klassiske tallplasseringspuslespillet. Laget med lidenskap og gratis for alle – uten reklame og uten konto.' })
   },
   pl: { name: 'Czysta logika', tagline: 'Łamigłówka liczbowa', test: 'WERSJA TESTOWA', privacy: 'Prywatność', sndLbl: 'Dźwięk', howTo: 'Jak grać', playNow: 'Zagraj', toMenu: 'Menu', close: 'Rozumiem',
-    undo: 'Cofnij', erase: 'Wymaż', notes: 'Notatki', hint: 'Podpowiedź', on: 'wł.', mistakes: 'Błędy', hintsLeft: 'Podpowiedzi', time: 'Czas', timeOff: 'Czas (wył.)', hintsUsed: 'Podpowiedzi',
+    undo: 'Cofnij', erase: 'Wymaż', notes: 'Notatki', hint: 'Podpowiedź', on: 'wł.', mistakes: 'Błędy', hintsLeft: 'Podpowiedzi', left: 'zostało', leftLbl: '{n} zostało', time: 'Czas', timeOff: 'Czas (wył.)', hintsUsed: 'Podpowiedzi',
     easy: 'Łatwy', medium: 'Średni', hard: 'Trudny', easyT: '2–5 min', mediumT: '5–15 min', hardT: '15–30 min', dailyChip: 'Dnia',
     daily: 'Plansza dnia', dailyInfo: 'Dziś ta sama plansza dla wszystkich · {date}', dailyDone: 'Rozwiązana dziś ✓ · {date}',
     timed: 'Tryb czasowy', timedSub: 'Zegar i najlepsze czasy (domyślnie wyłączony)', showErr: 'Pokazuj błędy', showErrSub: 'Błędne cyfry zaznaczane na czerwono',
@@ -575,7 +579,7 @@ var T = {
       about: 'Czysta logika jest inspirowana klasyczną łamigłówką polegającą na wpisywaniu cyfr. Stworzona z pasji i darmowa dla wszystkich – bez reklam i bez konta.' })
   },
   en: { name: 'Pure Logic', tagline: 'Number puzzle', test: 'TEST VERSION', privacy: 'Privacy', sndLbl: 'Sound', howTo: 'How to play', playNow: 'Play', toMenu: 'Menu', close: 'Got it',
-    undo: 'Undo', erase: 'Erase', notes: 'Notes', hint: 'Hint', on: 'on', mistakes: 'Mistakes', hintsLeft: 'Hints', time: 'Time', timeOff: 'Time (off)', hintsUsed: 'Hints used',
+    undo: 'Undo', erase: 'Erase', notes: 'Notes', hint: 'Hint', on: 'on', mistakes: 'Mistakes', hintsLeft: 'Hints', left: 'left', leftLbl: '{n} left', time: 'Time', timeOff: 'Time (off)', hintsUsed: 'Hints used',
     easy: 'Easy', medium: 'Medium', hard: 'Hard', easyT: '2–5 min', mediumT: '5–15 min', hardT: '15–30 min', dailyChip: 'Daily',
     daily: 'Daily puzzle', dailyInfo: 'Same board for everyone today · {date}', dailyDone: 'Solved today ✓ · {date}',
     timed: 'Timed mode', timedSub: 'Clock and best times (off by default)', showErr: 'Show mistakes', showErrSub: 'Wrong digits turn red',
@@ -758,10 +762,10 @@ function build() {
 function isWrong(i) { return S.cur[i] && !S.puz[i] && S.cur[i] !== S.sol[i]; }
 function render() {
   if (!S) return; build();
-  var sel = S.sel, sv = sel >= 0 ? S.cur[sel] : 0, hd = sv || pickDigit, counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  var sel = S.sel, sv = sel >= 0 ? S.cur[sel] : 0, hd = sv || pickDigit, counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], left = 0;
   for (var i = 0; i < 81; i++) {
     var c = cells[i], v = S.cur[i], g = !!S.puz[i], cls = 'c' + ((i % 9 === 2 || i % 9 === 5) ? ' bR' : '') + ((LG.ROW[i] === 2 || LG.ROW[i] === 5) ? ' bB' : '');
-    if (v) counts[v]++;
+    if (v) counts[v]++; else left++;
     if (g) cls += ' g';
     if (sel >= 0 && i !== sel && (LG.ROW[i] === LG.ROW[sel] || LG.COL[i] === LG.COL[sel] || LG.BOX[i] === LG.BOX[sel])) cls += ' hl';
     if (hd && v === hd) cls += ' same';
@@ -782,7 +786,9 @@ function render() {
   $('tUndo').disabled = !S.hist.length || S.done;
   $('iDiff').textContent = S.daily ? t('dailyChip') + ' · ' + fmtDate(S.daily) : t(S.diff); $('iDiff').classList.toggle('daily', !!S.daily);
   $('iErrW').hidden = !prefs.showErr; $('iErr').textContent = S.mistakes;
+  $('iLeft').textContent = left; $('iLeftW').setAttribute('aria-label', t('leftLbl', { n: left }));
   $('clock').hidden = !S.timed; $('iHintW').hidden = false; updClock();
+  layout();
 }
 function fmtDate(k) { var p = String(k).split('-'); return p.length === 3 ? (+p[2]) + '.' + (+p[1]) + '.' : k; }
 function fmtTime(ms) { var s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, ss = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(ss).padStart(2, '0'); }
@@ -813,7 +819,10 @@ function input(d) {
   save(); render(); checkWin();
 }
 function unitDone(i) { // tiny flourish when a row/column/box gets completed correctly
-  LG.UNITS.forEach(function (u, k) { if (u.indexOf(i) < 0) return; if (u.every(function (j) { return S.cur[j] === S.sol[j]; })) u.forEach(function (j, n) { var c = cells[j]; setTimeout(function () { c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash'); }, n * 25); }); });
+  var hit = false;
+  LG.UNITS.forEach(function (u, k) { if (u.indexOf(i) < 0) return; if (u.every(function (j) { return S.cur[j] === S.sol[j]; })) { hit = true; u.forEach(function (j, n) { var c = cells[j]; setTimeout(function () { c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash'); }, n * 25); }); } });
+  if (!hit) return;
+  for (var n = 0; n < 81; n++) if (S.cur[n] !== S.sol[n]) { sfx('unit'); return; }
 }
 function erase() { if (!S || S.done || S.sel < 0) return; if (S.puz[S.sel]) { toast(t('given')); return; } if (setCell(S.sel, 0, 'x')) { sfx('erase'); save(); render(); } }
 function undo() { if (!S || S.done || !S.hist.length) return; var e = S.hist.pop(); S.cur[e.i] = e.v; S.notes[e.i] = e.n; (e.peers || []).forEach(function (p) { S.notes[p[0]] = p[1]; }); S.sel = e.i; sfx('erase'); save(); render(); }
@@ -855,6 +864,7 @@ function sfx(k) { if (prefs.mute || !ac()) return;
   if (k === 'place') tone(660, 0.09, 'triangle', 0.07); else if (k === 'note') tone(990, 0.05, 'sine', 0.04); else if (k === 'erase') tone(420, 0.07, 'sine', 0.05);
   else if (k === 'bad') { tone(196, 0.16, 'square', 0.035); tone(185, 0.16, 'square', 0.03, 0.05); } else if (k === 'hint') { tone(784, 0.1, 'sine', 0.06); tone(1047, 0.14, 'sine', 0.05, 0.08); }
   else if (k === 'start') { tone(523, 0.1, 'triangle', 0.05); tone(784, 0.14, 'triangle', 0.05, 0.08); }
+  else if (k === 'unit') { tone(988, 0.05, 'sine', 0.032, 0.08); tone(1319, 0.055, 'sine', 0.028, 0.13); tone(1568, 0.08, 'sine', 0.022, 0.18); }
   else if (k === 'win') [523, 659, 784, 1047, 1319].forEach(function (f, n) { tone(f, 0.35, 'triangle', 0.06, n * 0.09); }); }
 /* ---------------- start screen ---------------- */
 var pending = null;
@@ -1022,7 +1032,7 @@ var rzT = 0; window.addEventListener('resize', function () { clearTimeout(rzT); 
 window.addEventListener('orientationchange', function () { clearTimeout(rzT); rzT = setTimeout(layout, 80); });
 layout();
 try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); } catch (e) {}
-function renderBackdrop(p) { cells.forEach(function (c, i) { c.textContent = p[i] || ''; c.className = c.className.replace(/ g\b/, '') + (p[i] ? ' g' : ''); }); keys.forEach(function (k) { k.querySelector('small').textContent = ''; }); $('iDiff').textContent = t('easy'); $('iErrW').hidden = true; $('tUndo').disabled = true; }
+function renderBackdrop(p) { var left = 0; cells.forEach(function (c, i) { c.textContent = p[i] || ''; if (!p[i]) left++; c.className = c.className.replace(/ g\b/, '') + (p[i] ? ' g' : ''); }); keys.forEach(function (k) { k.querySelector('small').textContent = ''; }); $('iDiff').textContent = t('easy'); $('iErrW').hidden = true; $('iLeft').textContent = left; $('iLeftW').setAttribute('aria-label', t('leftLbl', { n: left })); $('tUndo').disabled = true; }
 function showStartMenu() { if (!S) { S = null; } openMenu(); if (S) render(); else { var demo = LG.generate('easy', 'menu-backdrop'); S = null; renderBackdrop(demo.puzzle); } }
 S = loadSave();
 if (S && !S.done) { notesMode = false; render(); clockStart(); } // a board in progress continues right away (like Hefau), practice included
