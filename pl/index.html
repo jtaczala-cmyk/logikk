@@ -251,6 +251,16 @@ a{color:var(--teal)}
   #pad.notes .k{font-size:18px}
   .tb{min-height:44px}
 }
+/* 2026-11-14: portrait phones — 3×3 pad so each key is at least 44×44px. Short screens give a little board height to the pad. */
+@media (orientation:portrait) and (max-width:447px){
+  #top,#info,#tools,#pad,#foot{flex-shrink:0}
+  #tools{margin-top:4px;gap:4px}
+  #pad{grid-template-columns:repeat(3,1fr);gap:4px;margin-top:4px}
+  .k{min-height:44px;font-size:24px}
+  .k small{margin-top:1px}
+  #pad.notes .k{font-size:20px}
+  #foot{padding-top:2px}
+}
 /* first-visit how-to: short card, scroll inside short landscape, Play stays tappable */
 #howto .card{overflow-x:hidden;overflow-y:auto}
 #howto .pts{overflow-wrap:break-word}
@@ -958,7 +968,9 @@ document.addEventListener('keydown', function (e) {
 
 /* ---------------- layout: the biggest square board that fits between header and keypad ---------------- */
 function layout() {
-  var w = $('boardWrap'), W = w.clientWidth, H = w.clientHeight - 4, size = Math.max(180, Math.min(W, H, 620));
+  var w = $('boardWrap'), W = w.clientWidth, H = w.clientHeight - 4, size = Math.min(W, H, 620);
+  /* Keep a 180px board when it fits. On a short portrait phone, shrink the board instead of covering the 3×3 pad. */
+  if (!window.matchMedia('(orientation: portrait) and (max-width: 447px)').matches || size >= 180) size = Math.max(180, size);
   document.documentElement.style.setProperty('--cell', ((size - 8) / 9).toFixed(2) + 'px');
 }
 /* ---------------- analytics (launch build only): GoatCounter, cookie-free, self-hosted count.js (ISC) ----------------
