@@ -958,10 +958,16 @@ var rzT = 0; window.addEventListener('resize', function () { clearTimeout(rzT); 
 window.addEventListener('orientationchange', function () { clearTimeout(rzT); rzT = setTimeout(layout, 80); });
 layout();
 try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); } catch (e) {}
-S = loadSave();
-if (S && !S.done) { notesMode = false; render(); clockStart(); } // a board in progress continues right away (like Hefau)
-else { if (!S) { S = null; } openMenu(); if (S) render(); else { var demo = LG.generate('easy', 'menu-backdrop'); S = null; renderBackdrop(demo.puzzle); } }
 function renderBackdrop(p) { cells.forEach(function (c, i) { c.textContent = p[i] || ''; c.className = c.className.replace(/ g\b/, '') + (p[i] ? ' g' : ''); }); keys.forEach(function (k) { k.querySelector('small').textContent = ''; }); $('iDiff').textContent = t('easy'); $('iErrW').hidden = true; $('tUndo').disabled = true; }
+function showStartMenu() { if (!S) { S = null; } openMenu(); if (S) render(); else { var demo = LG.generate('easy', 'menu-backdrop'); S = null; renderBackdrop(demo.puzzle); } }
+S = loadSave();
+if (S && !S.done) { notesMode = false; render(); clockStart(); } // a board in progress continues right away (like Hefau), practice included
+else {
+  var dailySolved = false;
+  try { dailySolved = !!stats.daily[LG.dayKey()]; } catch (e1) {}
+  if (dailySolved) showStartMenu(); // today's daily already solved: streak, share, practice
+  else { try { ask('medium', true); } catch (e1) { showStartMenu(); } } // auto-daily-boot: same path as Dagens brett / ?daily=1
+}
 if (/[?&]nobadge=1/.test(location.search)) document.querySelectorAll('.testbadge').forEach(function (b) { b.remove(); }); // clean screenshots of the test build
 if (DEBUG && !/nobadge/.test(location.search)) { var dbg = document.createElement('div'); dbg.id = 'dbg'; dbg.textContent = 'debug'; document.body.appendChild(dbg); }
 paintDailyMeta(); setInterval(paintDailyMeta, 1000);
