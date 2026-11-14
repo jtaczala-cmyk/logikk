@@ -713,7 +713,7 @@ function showSolvedDaily() {
     S = { v: 1, diff: 'medium', seed: dk, daily: dk, puz: g.puzzle, sol: g.solution, cur: g.solution.slice(), notes: g.puzzle.map(function () { return 0; }),
           hist: [], hintsUsed: +rec.h || 0, mistakes: 0, el: elapsed, timed: elapsed > 0, done: true, sel: -1, counted: 1 };
     save();
-  } else if (!S.counted) { S.counted = 1; save(); }
+  } else if (!S.counted && stats.daily[dk]) { S.counted = 1; save(); } // day already in the streak; an unrecorded solve (no stats entry) stays counted=0 so openWin writes it once
   notesMode = false; pickDigit = 0; clockStop(); hide('menu'); hide('confirm'); build(); render(); openWin();
 }
 function newBoard(diff, daily) {

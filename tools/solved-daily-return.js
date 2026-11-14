@@ -332,6 +332,28 @@ function main() {
   const after = JSON.parse(r.sandbox.localStorage.getItem('logikk_stats_v1'));
   assert(!after.daily[today] && after.medium.won === 3, 'auto-start wrote today\'s stats.daily');
 
+  // 7. Solve saved in the 900ms before openWin (counted 0, no stats.daily entry) is recorded once on return.
+  const unrecorded = baseSave(g, today);
+  r = boot(html, storeOf(unrecorded, statsObj()));
+  const st7 = state(r.sandbox);
+  assert(st7 && st7.done && st7.daily === today && st7.counted === 1, 'unrecorded solve was not kept');
+  assert(st7.mistakes === 4 && st7.el === 77777 && st7.hintsUsed === 2, 'unrecorded solve was rebuilt and lost the result');
+  assert(filled(st7), 'unrecorded solve grid is not the saved solution');
+  assert(r.elements.win && r.elements.win.hidden === false && r.elements.menu.hidden === true, 'unrecorded solve did not open the win card');
+  assert(r.sandbox.__newBoards.length === 0 && gc(r.sandbox).indexOf('start-daily') < 0, 'unrecorded solve started a new daily');
+  assert(gc(r.sandbox).filter(function (n) { return n === 'finish-daily'; }).length === 1, 'unrecorded solve tracked finish-daily ' + JSON.stringify(gc(r.sandbox)));
+  assert(r.intervals.indexOf(500) < 0, 'unrecorded solve started the clock');
+  const live7 = r.sandbox.LOGIKK.stats();
+  assert(live7.daily[today] && live7.daily[today].t === 77777 && live7.daily[today].h === 2, 'unrecorded solve did not write the daily record');
+  assert(live7.medium.won === 4 && live7.medium.best === 77777, 'unrecorded solve did not count the win');
+  assert(live7.streak.cur === 1 && live7.streak.best === 1, 'unrecorded solve did not update the streak');
+  const stored7 = storeOf(JSON.parse(r.sandbox.localStorage.getItem('logikk_save_v1')), JSON.parse(r.sandbox.localStorage.getItem('logikk_stats_v1')));
+  r = boot(html, stored7);
+  const live7b = r.sandbox.LOGIKK.stats();
+  assert(live7b.medium.won === 4 && live7b.daily[today].t === 77777 && live7b.streak.cur === 1, 'second visit recounted the recovered daily');
+  assert(gc(r.sandbox).indexOf('finish-daily') < 0 && gc(r.sandbox).indexOf('start-daily') < 0, 'second visit tracked the daily again');
+  assert(state(r.sandbox).mistakes === 4 && state(r.sandbox).counted === 1 && filled(state(r.sandbox)), 'second visit rebuilt the recovered daily');
+
   console.log('solved-daily-return: ok (' + today + ')');
 }
 
