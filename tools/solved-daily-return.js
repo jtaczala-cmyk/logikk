@@ -82,7 +82,7 @@ function makeElement() {
   return el;
 }
 
-const START_HIDDEN = { menu: 1, share: 1, rules: 1, win: 1, confirm: 1, clock: 1, mContinue: 1, wResult: 1, winNext: 1, winGrid: 1, winMore: 1, fPrivW: 1, sNative: 1 };
+const START_HIDDEN = { menu: 1, share: 1, rules: 1, win: 1, confirm: 1, clock: 1, mContinue: 1, wResult: 1, winNext: 1, winGrid: 1, winMore: 1, fPrivW: 1, sNative: 1, howto: 1 };
 
 function runPage(html, opts) {
   const elements = {};
@@ -251,6 +251,7 @@ function main() {
     assert(filled(st), label + ' grid is not filled with the solution');
     assert(r.elements.win && r.elements.win.hidden === false, label + ' win card hidden');
     assert(r.elements.menu.hidden === true, label + ' start menu is open');
+    assert(!r.elements.howto || r.elements.howto.hidden !== false, label + ' showed the how-to overlay');
     assert(r.elements.confirm.hidden === true, label + ' confirm dialog is open');
     assert(r.elements.wResult && r.elements.wResult.hidden === false, label + ' share-result button hidden');
     assert(r.elements.winGrid && r.elements.winGrid.hidden === false && /stop60\.no\/logikk/.test(r.elements.winGrid.textContent) && !/utm/i.test(r.elements.winGrid.textContent), label + ' share card missing');
@@ -309,6 +310,7 @@ function main() {
   assert(r.sandbox.__newBoards.length === 0 && gc(r.sandbox).indexOf('start-daily') < 0, 'unfinished practice auto-started a daily');
   assert(state(r.sandbox).done === false && state(r.sandbox).daily === '' && state(r.sandbox).seed === 'practice', 'unfinished practice did not resume');
   assert((!r.elements.win || r.elements.win.hidden === true) && r.elements.menu.hidden === true, 'unfinished practice opened the menu or the win card');
+  assert(!r.elements.howto || r.elements.howto.hidden !== false, 'unfinished practice showed the how-to overlay');
   assert(r.intervals.indexOf(500) >= 0, 'unfinished practice did not start the clock');
   r = boot(html, storeOf(progress, statsObj()), '?debug=1&daily=1');
   assert(r.sandbox.__newBoards.length === 0 && gc(r.sandbox).indexOf('start-daily') < 0, '?daily=1 on practice started a daily without confirm');
@@ -324,6 +326,8 @@ function main() {
   r = boot(html, storeOf(null, statsObj()));
   assert(JSON.stringify(r.sandbox.__newBoards) === '[["medium",true]]', 'unsolved bare visit did not auto-start the daily');
   assert(gc(r.sandbox).indexOf('start-daily') >= 0 && gc(r.sandbox).indexOf('finish-daily') < 0, 'unsolved bare visit tracked the wrong event');
+  assert(gc(r.sandbox).filter(function (n) { return n === 'start-daily'; }).length === 1, 'unsolved bare visit started the daily more than once');
+  assert(!r.elements.howto || r.elements.howto.hidden !== false, 'familiar auto-start showed the how-to overlay');
   assert(state(r.sandbox).done === false && state(r.sandbox).daily === today, 'unsolved bare visit did not open today\'s daily');
   const after = JSON.parse(r.sandbox.localStorage.getItem('logikk_stats_v1'));
   assert(!after.daily[today] && after.medium.won === 3, 'auto-start wrote today\'s stats.daily');
