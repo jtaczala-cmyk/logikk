@@ -153,16 +153,28 @@ function runPage(html, opts) {
   return { sandbox: sandbox, elements: elements, intervals: intervals.map(function (x) { return x.ms; }) };
 }
 
-function freshBoard(lg, today) {
-  const g = lg.generate('medium', 'daily-' + today);
+function loadDailyDiff(src) {
+  const start = src.indexOf('var DAILY_EASY_FROM = ');
+  const end = src.indexOf('function showSolvedDaily');
+  assert(start > 0 && end > start, 'dailyDiff helper missing');
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(src.slice(start, end) + '\nthis.dailyDiff = dailyDiff;', ctx);
+  assert(typeof ctx.dailyDiff === 'function', 'dailyDiff did not load');
+  return ctx.dailyDiff;
+}
+
+function freshBoard(lg, today, diff) {
+  const g = lg.generate(diff, 'daily-' + today);
   assert(g && g.solution && g.solution.length === 81, 'generator returned a board');
+  assert(g.diff === diff && g.seed === 'daily-' + today, 'official daily was not generated at ' + diff);
   assert(g.solution.every(function (v, i) { return v >= 1 && v <= 9 && (!g.puzzle[i] || g.puzzle[i] === v); }), 'solution fills the puzzle');
   return g;
 }
 
 function baseSave(g, today, extra) {
   const s = {
-    v: 1, diff: 'medium', seed: today, daily: today,
+    v: 1, diff: g.diff, seed: today, daily: today,
     puz: g.puzzle.slice(), sol: g.solution.slice(), cur: g.solution.slice(),
     notes: g.puzzle.map(function () { return 0; }), hist: [],
     hintsUsed: 2, mistakes: 4, el: 77777, timed: true, done: true, sel: -1, counted: 0
@@ -228,10 +240,11 @@ function main() {
   assert(!bootSrc.includes('newBoard'), 'bare boot calls newBoard directly');
 
   const today = dayKey();
+  const dailyDiff = loadDailyDiff(src);
   const lgCtx = {};
   vm.createContext(lgCtx);
   vm.runInContext(src.slice(0, src.indexOf("(function () {\n'use strict';")) + '\nthis.LG = LG;', lgCtx);
-  const g = freshBoard(lgCtx.LG, today);
+  const g = freshBoard(lgCtx.LG, today, dailyDiff(today));
   const html = htmls[0];
   const rec = { t: 5000, h: 1 };
   const stats = withDaily(today, rec);
@@ -292,6 +305,7 @@ function main() {
   solvedView(r, 'practice save');
   const st2 = state(r.sandbox);
   assert(st2.mistakes === 0 && st2.el === 5000 && st2.hintsUsed === 1 && st2.timed === true && st2.counted === 1, 'practice save was not rebuilt from the daily record');
+  assert(st2.diff === dailyDiff(today), 'rebuilt official daily used ' + st2.diff + ' on ' + today);
   assert(JSON.stringify(st2.puz) === JSON.stringify(g.puzzle) && JSON.stringify(st2.cur) === JSON.stringify(g.solution), 'rebuilt board is not today\'s official daily');
 
   // 3. ?daily=1 and #daily must not start a new daily.
@@ -328,7 +342,7 @@ function main() {
   assert(gc(r.sandbox).indexOf('start-daily') >= 0 && gc(r.sandbox).indexOf('finish-daily') < 0, 'unsolved bare visit tracked the wrong event');
   assert(gc(r.sandbox).filter(function (n) { return n === 'start-daily'; }).length === 1, 'unsolved bare visit started the daily more than once');
   assert(!r.elements.howto || r.elements.howto.hidden !== false, 'familiar auto-start showed the how-to overlay');
-  assert(state(r.sandbox).done === false && state(r.sandbox).daily === today, 'unsolved bare visit did not open today\'s daily');
+  assert(state(r.sandbox).done === false && state(r.sandbox).daily === today && state(r.sandbox).diff === dailyDiff(today), 'unsolved bare visit did not open today\'s daily at ' + dailyDiff(today));
   const after = JSON.parse(r.sandbox.localStorage.getItem('logikk_stats_v1'));
   assert(!after.daily[today] && after.medium.won === 3, 'auto-start wrote today\'s stats.daily');
 

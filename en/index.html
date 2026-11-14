@@ -549,7 +549,7 @@ var T = {
       ['Slik fyller du inn', ['Trykk på en tom rute, og trykk deretter på et tall nederst.', '<b>Notater</b>: slå på blyanten for å skrive små kandidattall i en rute. Når du fyller inn et tall, strykes det automatisk fra notatene i samme rad, kolonne og 3×3-rute.', '<b>Angre</b> tar tilbake siste trekk, <b>Visk ut</b> tømmer den valgte ruten.', 'Med tastatur: 1–9, piltaster, Backspace, N for notater, Z for angre.']],
       ['Hjelp når du står fast', ['<b>Hint</b> (3 per brett) fyller inn den neste ruten som kan løses logisk, og forteller hvorfor. Har du et feil tall på brettet, fjerner hintet det først.', '<b>Vis feil</b> (på som standard) markerer feil tall med rødt. Du kan slå det av i menyen.']],
       ['Nivåer', ['<b>Lett</b> (vanligvis 2–5 min): bare enkle steg – et tall som bare passer ett sted, eller en rute der bare ett tall passer.', '<b>Middels</b>: krever notater, par og låste kandidater.', '<b>Vanskelig</b>: færre tall fra start; trillinger, X-Wing og XY-Wing.']],
-      ['Dagens brett og tidsmodus', 'Dagens brett (middels) er det samme for alle, hver dag. Tidsmodus er av som standard – slå det på i menyen for å se klokken og samle beste tider. Uten tidsmodus er det ingen klokke og ingen hast.'],
+      ['Dagens brett og tidsmodus', 'Dagens brett er det samme for alle, hver dag, på et nivå som vanligvis tar noen minutter (lett). Tidsmodus er av som standard – slå det på i menyen for å se klokken og samle beste tider. Uten tidsmodus er det ingen klokke og ingen hast.'],
       ['Lagring', 'Brettet lagres automatisk på enheten, så du kan fortsette senere. Når siden først er lastet, virker spillet også uten nett.']],
       about: 'Ren logikk er inspirert av det klassiske tallplasseringspuslespillet. Laget med lidenskap og gratis for alle – uten reklame og uten konto.' })
   },
@@ -570,7 +570,7 @@ var T = {
       ['Jak wpisywać', ['Dotknij pustego pola, a potem cyfry na dole.', '<b>Notatki</b>: włącz ołówek, aby wpisywać małe cyfry-kandydatów. Gdy wpiszesz cyfrę, znika ona automatycznie z notatek w tym samym wierszu, kolumnie i kwadracie 3×3.', '<b>Cofnij</b> wycofuje ostatni ruch, <b>Wymaż</b> czyści wybrane pole.', 'Na klawiaturze: 1–9, strzałki, Backspace, N – notatki, Z – cofnij.']],
       ['Gdy utkniesz', ['<b>Podpowiedź</b> (3 na planszę) wpisuje kolejne pole, które da się logicznie rozwiązać, i wyjaśnia dlaczego. Jeśli na planszy jest błędna cyfra, podpowiedź najpierw ją usuwa.', '<b>Pokazuj błędy</b> (domyślnie włączone) zaznacza błędne cyfry na czerwono. Możesz to wyłączyć w menu.']],
       ['Poziomy', ['<b>Łatwy</b> (zwykle 2–5 min): tylko proste kroki – cyfra, która pasuje tylko w jednym miejscu, albo pole, do którego pasuje tylko jedna cyfra.', '<b>Średni</b>: wymaga notatek, par i zablokowanych kandydatów.', '<b>Trudny</b>: mniej cyfr na starcie; trójki, X-Wing i XY-Wing.']],
-      ['Plansza dnia i tryb czasowy', 'Plansza dnia (średnia) jest codziennie taka sama dla wszystkich. Tryb czasowy jest domyślnie wyłączony – włącz go w menu, aby widzieć zegar i zbierać najlepsze czasy. Bez trybu czasowego nie ma zegara ani pośpiechu.'],
+      ['Plansza dnia i tryb czasowy', 'Plansza dnia jest codziennie taka sama dla wszystkich, na poziomie, który zwykle zajmuje kilka minut (łatwy). Tryb czasowy jest domyślnie wyłączony – włącz go w menu, aby widzieć zegar i zbierać najlepsze czasy. Bez trybu czasowego nie ma zegara ani pośpiechu.'],
       ['Zapis', 'Plansza zapisuje się automatycznie na urządzeniu, więc możesz wrócić do niej później. Po pierwszym wczytaniu gra działa też bez internetu.']],
       about: 'Czysta logika jest inspirowana klasyczną łamigłówką polegającą na wpisywaniu cyfr. Stworzona z pasji i darmowa dla wszystkich – bez reklam i bez konta.' })
   },
@@ -591,7 +591,7 @@ var T = {
       ['Filling in', ['Tap an empty cell, then tap a digit at the bottom.', '<b>Notes</b>: switch on the pencil to write small candidate digits in a cell. When you enter a digit, it is removed automatically from the notes in the same row, column and 3×3 box.', '<b>Undo</b> takes back the last move, <b>Erase</b> clears the selected cell.', 'With a keyboard: 1–9, arrow keys, Backspace, N for notes, Z for undo.']],
       ['When you are stuck', ['<b>Hint</b> (3 per board) fills in the next cell that can be solved logically and tells you why. If there is a wrong digit on the board, the hint removes it first.', '<b>Show mistakes</b> (on by default) marks wrong digits in red. You can turn it off in the menu.']],
       ['Levels', ['<b>Easy</b> (usually 2–5 min): simple steps only – a digit that fits in just one place, or a cell where just one digit fits.', '<b>Medium</b>: needs notes, pairs and locked candidates.', '<b>Hard</b>: fewer starting digits; triples, X-Wing and XY-Wing.']],
-      ['Daily puzzle and timed mode', 'The daily puzzle (medium) is the same for everyone, every day. Timed mode is off by default – switch it on in the menu to see the clock and collect best times. Without timed mode there is no clock and no rush.'],
+      ['Daily puzzle and timed mode', 'The daily puzzle is the same for everyone, every day, at a level that usually takes a few minutes (easy). Timed mode is off by default – switch it on in the menu to see the clock and collect best times. Without timed mode there is no clock and no rush.'],
       ['Saving', 'The board is saved automatically on your device, so you can continue later. Once the page has loaded, the game also works offline.']],
       about: 'Pure Logic is inspired by the classic number-placement puzzle. Made with passion and free for everyone – no ads and no account.' })
   }
@@ -712,15 +712,19 @@ function todayDailySolved() {
   try { if (stats.daily[LG.dayKey()]) return true; } catch (e) {}
   return !!(S && S.done && S.daily === LG.dayKey());
 }
+var DAILY_EASY_FROM = '2026-11-15'; // inclusive, compare to LG.dayKey() / YYYY-MM-DD
+function dailyDiff(key) {
+  return String(key) >= DAILY_EASY_FROM ? 'easy' : 'medium';
+}
 function showSolvedDaily() {
   var dk = LG.dayKey();
   if (!(S && S.done && S.daily === dk)) {
     var rec = stats.daily && stats.daily[dk];
     if (!rec || typeof rec !== 'object') rec = { t: 0, h: 0 };
-    var g = LG.generate('medium', 'daily-' + dk);
+    var g = LG.generate(dailyDiff(dk), 'daily-' + dk);
     if (!g || !g.solution) throw new Error('daily');
     var elapsed = +rec.t || 0;
-    S = { v: 1, diff: 'medium', seed: dk, daily: dk, puz: g.puzzle, sol: g.solution, cur: g.solution.slice(), notes: g.puzzle.map(function () { return 0; }),
+    S = { v: 1, diff: dailyDiff(dk), seed: dk, daily: dk, puz: g.puzzle, sol: g.solution, cur: g.solution.slice(), notes: g.puzzle.map(function () { return 0; }),
           hist: [], hintsUsed: +rec.h || 0, mistakes: 0, el: elapsed, timed: elapsed > 0, done: true, sel: -1, counted: 1 };
     save();
   } else if (!S.counted) { S.counted = 1; save(); }
@@ -730,8 +734,8 @@ function newBoard(diff, daily) {
   if (daily && todayDailySolved()) { showSolvedDaily(); return; } // a solved official daily is never regenerated or re-tracked
   window.StopWisdom&&StopWisdom.hide();
   var seed = daily ? LG.dayKey() : (Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
-  var g = LG.generate(daily ? 'medium' : diff, daily ? 'daily-' + seed : seed);
-  S = { v: 1, diff: daily ? 'medium' : diff, seed: seed, daily: daily ? seed : '', puz: g.puzzle, sol: g.solution, cur: g.puzzle.slice(), notes: g.puzzle.map(function () { return 0; }),
+  var g = LG.generate(daily ? dailyDiff(seed) : diff, daily ? 'daily-' + seed : seed);
+  S = { v: 1, diff: daily ? dailyDiff(seed) : diff, seed: seed, daily: daily ? seed : '', puz: g.puzzle, sol: g.solution, cur: g.puzzle.slice(), notes: g.puzzle.map(function () { return 0; }),
         hist: [], hintsUsed: 0, mistakes: 0, el: 0, timed: !!prefs.timed, done: false, sel: -1, counted: 0 };
   notesMode = false; pickDigit = 0; save(); hide('menu'); hide('win'); build(); render(); clockStart();
   track('start-' + (daily ? 'daily' : diff)); sfx('start');
