@@ -168,13 +168,13 @@ function loadDailyDiff(src) {
   assert(start > 0 && end > start, 'dailyDiff helper missing');
   const ctx = {};
   vm.createContext(ctx);
-  vm.runInContext(src.slice(start, end) + '\nthis.dailyDiff = dailyDiff;', ctx);
-  assert(typeof ctx.dailyDiff === 'function', 'dailyDiff did not load');
-  return ctx.dailyDiff;
+  vm.runInContext(src.slice(start, end) + '\nthis.dailyDiff = dailyDiff; this.dailyGenSpec = dailyGenSpec;', ctx);
+  assert(typeof ctx.dailyDiff === 'function' && typeof ctx.dailyGenSpec === 'function', 'daily helpers did not load');
+  return ctx;
 }
 
-function freshBoard(lg, today, diff) {
-  const g = lg.generate(diff, 'daily-' + today);
+function freshBoard(lg, today, diff, spec) {
+  const g = lg.generate(diff, 'daily-' + today, spec);
   assert(g && g.solution && g.solution.length === 81, 'generator returned a board');
   assert(g.diff === diff && g.seed === 'daily-' + today, 'official daily was not generated at ' + diff);
   return g;
@@ -248,11 +248,13 @@ function main() {
 
   const today = dayKey();
   const html = htmls[0];
-  const dailyDiff = loadDailyDiff(src);
+  const helpers = loadDailyDiff(src);
+  const dailyDiff = helpers.dailyDiff;
   const lgCtx = {};
   vm.createContext(lgCtx);
   vm.runInContext(src.slice(0, src.indexOf("(function () {\n'use strict';")) + '\nthis.LG = LG;', lgCtx);
-  const g = freshBoard(lgCtx.LG, today, dailyDiff(today));
+  helpers.LG = lgCtx.LG;
+  const g = freshBoard(lgCtx.LG, today, dailyDiff(today), helpers.dailyGenSpec(today));
 
   // 1. Empty storage: auto-daily, then the short overlay. One start event. Board stays.
   let r = boot(html, {});

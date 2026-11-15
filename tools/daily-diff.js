@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 /* Official daily difficulty: medium through 2026-11-14, easy from 2026-11-15.
+   From the cutoff the official daily keeps the easy label and uses a denser clue band.
    Practice boards stay on the difficulty the menu asks for. */
 const fs = require('fs');
 const path = require('path');
@@ -47,7 +48,7 @@ function loadDailyDiff(src) {
   assert(src.indexOf('var DAILY_EASY_FROM = ', start + 1) < 0, 'dailyDiff helper is not unique');
   const ctx = {};
   vm.createContext(ctx);
-  vm.runInContext(src.slice(start, end) + '\nthis.dailyDiff = dailyDiff; this.DAILY_EASY_FROM = DAILY_EASY_FROM;', ctx);
+  vm.runInContext(src.slice(start, end) + '\nthis.dailyDiff = dailyDiff; this.dailyGenSpec = dailyGenSpec; this.DAILY_EASY_FROM = DAILY_EASY_FROM;', ctx);
   return ctx;
 }
 
@@ -215,6 +216,9 @@ function main() {
   assert(src.includes("GC_CODE = 'jtaczala-games'") && src.includes("track('start-' + (daily ? 'daily' : diff))") && src.includes("track('finish-' + (S.daily ? 'daily' : d))") && src.includes("track('share')"), 'GoatCounter events changed');
   assert(!/[?&]utm_|utm_source|utm_medium|utm_campaign/i.test(src), 'tracking params appeared');
   assert(src.includes("ask('medium', true)"), 'daily autostart no longer goes through ask');
+  assert(src.includes("LG.generate(dailyDiff(dk), 'daily-' + dk, dailyGenSpec(dk))"), 'showSolvedDaily does not pass dailyGenSpec');
+  assert(src.includes("LG.generate(daily ? dailyDiff(seed) : diff, daily ? 'daily-' + seed : seed, daily ? dailyGenSpec(seed) : null)"), 'newBoard does not pass dailyGenSpec');
+  assert(!/diff:\s*'gentle'|S\.diff\s*=\s*'gentle'|diff:\s*'daily'/.test(src), 'official daily stored a gentle or daily difficulty');
 
   const helper = loadDailyDiff(src);
   assert(helper.DAILY_EASY_FROM === '2026-11-15', 'cutoff constant');
@@ -226,11 +230,26 @@ function main() {
   vm.createContext(lgCtx);
   vm.runInContext(src.slice(0, src.indexOf("(function () {\n'use strict';")) + '\nthis.LG = LG;', lgCtx);
   const LG = lgCtx.LG;
-  const medium = LG.generate(helper.dailyDiff('2026-11-14'), 'daily-2026-11-14');
-  const easy = LG.generate(helper.dailyDiff('2026-11-15'), 'daily-2026-11-15');
+  helper.LG = LG;
+  assert(LG.DIFF.easy.lv === 1 && LG.DIFF.easy.min === 36 && LG.DIFF.easy.max === 40, 'practice easy band changed');
+  assert(LG.DIFF.medium.lv === 2 && LG.DIFF.medium.min === 28 && LG.DIFF.medium.max === 32, 'practice medium band changed');
+  assert(LG.DIFF.hard.lv === 3 && LG.DIFF.hard.min === 22 && LG.DIFF.hard.max === 28, 'practice hard band changed');
+  assert(helper.dailyGenSpec('2026-11-13') == null && helper.dailyGenSpec('2026-11-14') == null, 'pre-cutoff daily picked up a clue override');
+  const gentle = helper.dailyGenSpec('2026-11-15');
+  assert(gentle && gentle === LG.DIFF.gentle && gentle.lv === 1 && gentle.min === 44 && gentle.max === 48, '15 Nov gentle spec is ' + JSON.stringify(gentle));
+  assert(helper.dailyGenSpec('2026-11-16') === LG.DIFF.gentle, '16 Nov does not use the gentle spec');
+  const medium = LG.generate(helper.dailyDiff('2026-11-14'), 'daily-2026-11-14', helper.dailyGenSpec('2026-11-14'));
+  const easy = LG.generate(helper.dailyDiff('2026-11-15'), 'daily-2026-11-15', helper.dailyGenSpec('2026-11-15'));
+  const practice = LG.generate('easy', 'practice-easy-check');
   assert(medium && medium.diff === 'medium' && medium.seed === 'daily-2026-11-14' && medium.level === 2, 'daily-2026-11-14 was not a medium board');
   assert(easy && easy.diff === 'easy' && easy.seed === 'daily-2026-11-15' && easy.level === 1, 'daily-2026-11-15 was not an easy board');
+  const easyEmpty = 81 - easy.clues;
+  assert(easy.clues >= 42 && easy.clues <= 48, '15 Nov official clues ' + easy.clues);
+  assert(easy.clues >= 42 && easyEmpty <= 39, '15 Nov official is not denser than practice easy (' + easy.clues + ' clues, ' + easyEmpty + ' empty)');
+  assert(practice && practice.diff === 'easy' && practice.level === 1 && practice.seed === 'practice-easy-check' && practice.seed.indexOf('daily-') !== 0, 'practice easy generation changed');
+  assert(practice.clues >= 34 && practice.clues <= 40, 'practice easy clues ' + practice.clues);
   assert(JSON.stringify(medium.puzzle) !== JSON.stringify(easy.puzzle), 'the two daily seeds produced the same puzzle');
+  assert(JSON.stringify(practice.puzzle) !== JSON.stringify(easy.puzzle), 'practice easy reused the official daily grid');
 
   const html = htmls[0];
   const prefs = JSON.stringify({ lang: 'no', mute: true, timed: false, showErr: true, seenHowTo: true });
@@ -255,8 +274,10 @@ function main() {
   r.elements.mEasy.dataset.d = 'easy';
   r.elements.mEasy.onclick();
   st = r.sandbox.LOGIKK.state();
-  assert(st.diff === 'easy' && st.daily === '' && st.done === false && st.seed !== '2026-11-15', 'practice easy did not leave the official daily');
+  assert(st.diff === 'easy' && st.daily === '' && st.done === false && st.seed !== '2026-11-15' && st.seed.indexOf('daily-') !== 0, 'practice easy did not leave the official daily');
   assert(JSON.stringify(st.puz) !== JSON.stringify(dailyPuzzle), 'practice easy reused the daily puzzle');
+  const menuClues = st.puz.filter(Boolean).length;
+  assert(menuClues >= 34 && menuClues <= 40, 'menu practice easy clues ' + menuClues);
   assert(r.sandbox.__gcLog.indexOf('start-easy') >= 0, 'practice easy did not track start-easy');
   r.elements.mHard.dataset.d = 'hard';
   r.elements.mHard.onclick();
