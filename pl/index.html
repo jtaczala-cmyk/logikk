@@ -474,7 +474,7 @@ var LG = (function () {
   }
 
   // ---- generator: random full grid, then remove clue pairs (180° symmetry) while the solution stays unique and the rating stays within the level
-  var DIFF = { easy: { lv: 1, min: 36, max: 40 }, medium: { lv: 2, min: 28, max: 32 }, hard: { lv: 3, min: 22, max: 28 } };
+  var DIFF = { easy: { lv: 1, min: 36, max: 40 }, medium: { lv: 2, min: 28, max: 32 }, hard: { lv: 3, min: 22, max: 28 }, gentle: { lv: 1, min: 44, max: 48 } };
   function carve(sol, r, spec, target) {
     var p = sol.slice(), clues = 81, order = shuffle(Array.from({ length: 41 }, function (_, k) { return k; }), r);
     for (var k = 0; k < order.length && clues > target; k++) {
@@ -485,8 +485,8 @@ var LG = (function () {
     }
     return p;
   }
-  function generate(diff, seed) {
-    var spec = DIFF[diff] || DIFF.easy, r = rng('logikk|' + diff + '|' + seed), best = null;
+  function generate(diff, seed, specOverride) {
+    var spec = specOverride || DIFF[diff] || DIFF.easy, r = rng('logikk|' + diff + '|' + seed), best = null;
     for (var attempt = 0; attempt < 150; attempt++) {
       var sol = fullGrid(r), target = spec.min + Math.floor(r() * (spec.max - spec.min + 1)), p = carve(sol, r, spec, target);
       var n = p.filter(Boolean).length, rt = rate(p);
@@ -720,12 +720,15 @@ var DAILY_EASY_FROM = '2026-11-15'; // inclusive, compare to LG.dayKey() / YYYY-
 function dailyDiff(key) {
   return String(key) >= DAILY_EASY_FROM ? 'easy' : 'medium';
 }
+function dailyGenSpec(key) { // denser givens for the official daily; null keeps DIFF[dailyDiff(key)]
+  return String(key) >= DAILY_EASY_FROM ? LG.DIFF.gentle : null;
+}
 function showSolvedDaily() {
   var dk = LG.dayKey();
   if (!(S && S.done && S.daily === dk)) {
     var rec = stats.daily && stats.daily[dk];
     if (!rec || typeof rec !== 'object') rec = { t: 0, h: 0 };
-    var g = LG.generate(dailyDiff(dk), 'daily-' + dk);
+    var g = LG.generate(dailyDiff(dk), 'daily-' + dk, dailyGenSpec(dk));
     if (!g || !g.solution) throw new Error('daily');
     var elapsed = +rec.t || 0;
     S = { v: 1, diff: dailyDiff(dk), seed: dk, daily: dk, puz: g.puzzle, sol: g.solution, cur: g.solution.slice(), notes: g.puzzle.map(function () { return 0; }),
@@ -738,7 +741,7 @@ function newBoard(diff, daily) {
   if (daily && todayDailySolved()) { showSolvedDaily(); return; } // a solved official daily is never regenerated or re-tracked
   window.StopWisdom&&StopWisdom.hide();
   var seed = daily ? LG.dayKey() : (Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
-  var g = LG.generate(daily ? dailyDiff(seed) : diff, daily ? 'daily-' + seed : seed);
+  var g = LG.generate(daily ? dailyDiff(seed) : diff, daily ? 'daily-' + seed : seed, daily ? dailyGenSpec(seed) : null);
   S = { v: 1, diff: daily ? dailyDiff(seed) : diff, seed: seed, daily: daily ? seed : '', puz: g.puzzle, sol: g.solution, cur: g.puzzle.slice(), notes: g.puzzle.map(function () { return 0; }),
         hist: [], hintsUsed: 0, mistakes: 0, el: 0, timed: !!prefs.timed, done: false, sel: -1, counted: 0 };
   notesMode = false; pickDigit = 0; save(); hide('menu'); hide('win'); build(); render(); clockStart();
