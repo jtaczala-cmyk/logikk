@@ -204,6 +204,12 @@ a{color:var(--teal)}
 .winMoreK{margin:0 0 8px;font-size:13px;color:var(--mut,#a8a29e)}
 .winMore a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:3px;padding:8px 12px;border-radius:999px;border:1px solid rgba(245,241,232,.35);color:#f5f1e8;text-decoration:none;font:600 14px/1.2 system-ui,sans-serif}
 .winMore a:active{transform:scale(.98)}
+
+#wChallenge{margin:8px 0 0}
+#wChOpen{margin-top:8px}
+.chMenu{display:flex;flex-direction:column;gap:0;margin:4px 0 0;max-height:min(48vh,360px);overflow:auto;-webkit-overflow-scrolling:touch}
+.chMenu[hidden]{display:none}
+.chMenu .btn{min-height:48px;margin:4px 0 0;font-size:16px}
 #winMark{width:64px;height:64px;margin:2px auto 6px;border-radius:16px;background:var(--teal);display:grid;place-items:center;box-shadow:0 0 0 6px rgba(45,212,191,.16)}
 #winMark svg{width:36px;height:36px;fill:none;stroke:#06201d;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 #winTitle{font-size:32px!important}
@@ -352,6 +358,21 @@ a{color:var(--teal)}
     <a id="wmSite" href="https://stop60.no/pl/">Więcej gier na stop60.no</a>
   </nav>
   <button class="btn tl" id="wResult" hidden><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="shareResult">Udostępnij wynik</span></button>
+  <div id="wChallenge" hidden>
+    <button type="button" class="btn tl" id="wChOpen" aria-expanded="false" aria-controls="wChMenu"><span data-t="challenge">Utfordre…</span></button>
+    <div id="wChMenu" class="chMenu" hidden role="listbox">
+    <button type="button" class="btn" data-ch="boss" data-t="chLbl_boss">Utfordre sjefen</button>
+    <button type="button" class="btn" data-ch="pm" data-t="chLbl_pm">Utfordre statsministeren</button>
+    <button type="button" class="btn" data-ch="accountant" data-t="chLbl_accountant">Utfordre regnskapsføreren</button>
+    <button type="button" class="btn" data-ch="coworker" data-t="chLbl_coworker">Utfordre kollegaen</button>
+    <button type="button" class="btn" data-ch="bus" data-t="chLbl_bus">Utfordre bussjåføren</button>
+    <button type="button" class="btn" data-ch="neighbour" data-t="chLbl_neighbour">Utfordre naboen</button>
+    <button type="button" class="btn" data-ch="kiosk" data-t="chLbl_kiosk">Utfordre kioskselgeren</button>
+    <button type="button" class="btn" data-ch="manager" data-t="chLbl_manager">Utfordre lederen</button>
+    <button type="button" class="btn" data-ch="intern" data-t="chLbl_intern">Utfordre praktikanten</button>
+    <button type="button" class="btn" data-ch="other" data-t="chLbl_other">Utfordre noen andre</button>
+    </div>
+  </div>
   <button class="btn main" id="wAgain" data-t="again">Nowa plansza</button>
   <div id="winShare"><button type="button" class="qrfig" id="wQr"><span class="qrsvg" id="wQrSvg"></span></button><div class="col"><small data-t="qrShare">Zeskanuj i zagraj — podaj dalej</small><button class="btn tl" id="wShare"><svg class="shico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-t="share">Udostępnij grę</span></button><button class="btn" id="wMenu" data-t="toMenu">Menu</button></div></div>
 </div></div>
@@ -542,7 +563,7 @@ var T = {
     daily: 'Dagens brett', dailyInfo: 'Samme brett for alle i dag · {date}', dailyDone: 'Løst i dag ✓ · {date}',
     timed: 'Tidsmodus', timedSub: 'Klokke og beste tider (av som standard)', showErr: 'Vis feil', showErrSub: 'Feil tall markeres med rødt',
     continue: 'Fortsett brettet', contInfo: '{diff} · {n} ruter igjen', free: 'Laget med lidenskap – gratis for alle',
-    qrLabel: 'Skann og spill', qrShare: 'Skann og spill – del videre', share: 'Del spillet', shareTxt: 'Skann koden med kameraet på telefonen for å åpne spillet.', shareBtn: 'Del …', copy: 'Kopier lenke', copied: 'Kopiert!', close2: 'Lukk', rights: 'Alle rettigheter forbeholdt', shareResult: 'Del resultatet', copyResult: 'Del resultatet', meanwhile: 'Mens du venter på morgendagens brett', moreLava: 'Dagens løp i Lavakule', moreAxi: 'Aximore', moreSite: 'Flere spill på stop60.no', streakLine: '🔥 {cur} {unit} · beste {best}', streak1: 'dag på rad', streakN: 'dager på rad', nextIn: 'Neste brett om {t}',
+    qrLabel: 'Skann og spill', qrShare: 'Skann og spill – del videre', share: 'Del spillet', shareTxt: 'Skann koden med kameraet på telefonen for å åpne spillet.', shareBtn: 'Del …', copy: 'Kopier lenke', copied: 'Kopiert!', close2: 'Lukk', rights: 'Alle rettigheter forbeholdt', shareResult: 'Del resultatet', copyResult: 'Del resultatet', challenge: 'Utfordre…', chLbl_boss: 'Utfordre sjefen', chLbl_pm: 'Utfordre statsministeren', chLbl_accountant: 'Utfordre regnskapsføreren', chLbl_coworker: 'Utfordre kollegaen', chLbl_bus: 'Utfordre bussjåføren', chLbl_neighbour: 'Utfordre naboen', chLbl_kiosk: 'Utfordre kioskselgeren', chLbl_manager: 'Utfordre lederen', chLbl_intern: 'Utfordre praktikanten', chLbl_other: 'Utfordre noen andre', chTxt_boss: 'Sjef, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 Kan du slå meg?', chTxt_pm: 'Statsminister, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 Tar du utfordringen?', chTxt_accountant: 'Regnskapsfører, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 Kan du slå tallet mitt?', chTxt_coworker: 'Kollega, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 En runde i lunsjen?', chTxt_bus: 'Bussjåfør, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 Rekker du det før neste holdeplass?', chTxt_neighbour: 'Nabo, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 Kan du slå meg gjennom veggen?', chTxt_kiosk: 'Kioskselger, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 En runde mellom kundene?', chTxt_manager: 'Leder, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 Tar du utfordringen?', chTxt_intern: 'Praktikant, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 Viser du at du kan slå meg?', chTxt_other: 'Hei, jeg klarte dagens Stop60-utfordring med {s}/5 🐱 Kan du slå meg?', meanwhile: 'Mens du venter på morgendagens brett', moreLava: 'Dagens løp i Lavakule', moreAxi: 'Aximore', moreSite: 'Flere spill på stop60.no', streakLine: '🔥 {cur} {unit} · beste {best}', streak1: 'dag på rad', streakN: 'dager på rad', nextIn: 'Neste brett om {t}',
     winTitle: 'Løst!', winTxt: 'Brettet er løst – nivå: {diff}.', winDaily: 'Dagens brett er løst!', noHintsWin: ' Uten hint!', newBest: 'Ny rekord: {t}!', best: 'Beste tid: {t}', solvedN: 'Løste brett på dette nivået: {n}',
     again: 'Nytt brett', againDaily: 'Nytt middels brett', confirmNew: 'Starte et nytt brett? Det nåværende går tapt.', no: 'Nei', yes: 'Ja',
     hNaked: 'Bare {d} passer i denne ruten.', hHidden: '{d} kan bare stå her i denne {u}.', uRow: 'raden', uCol: 'kolonnen', uBox: 'boksen', hLogic: 'Etter å ha strøket kandidater passer bare {d} her.',
@@ -563,7 +584,7 @@ var T = {
     daily: 'Plansza dnia', dailyInfo: 'Dziś ta sama plansza dla wszystkich · {date}', dailyDone: 'Rozwiązana dziś ✓ · {date}',
     timed: 'Tryb czasowy', timedSub: 'Zegar i najlepsze czasy (domyślnie wyłączony)', showErr: 'Pokazuj błędy', showErrSub: 'Błędne cyfry zaznaczane na czerwono',
     continue: 'Kontynuuj planszę', contInfo: '{diff} · zostało pól: {n}', free: 'Stworzone z pasji – za darmo dla wszystkich',
-    qrLabel: 'Zeskanuj i zagraj', qrShare: 'Zeskanuj i zagraj — podaj dalej', share: 'Udostępnij grę', shareTxt: 'Zeskanuj kod aparatem telefonu, aby otworzyć grę.', shareBtn: 'Udostępnij …', copy: 'Kopiuj link', copied: 'Skopiowano!', close2: 'Zamknij', rights: 'Wszelkie prawa zastrzeżone', shareResult: 'Udostępnij wynik', copyResult: 'Udostępnij wynik', meanwhile: 'Zanim jutro będzie nowa plansza', moreLava: 'Bieg dnia w Lawowej kulce', moreAxi: 'Aximore', moreSite: 'Więcej gier na stop60.no', streakLine: '🔥 {cur} {unit} · rekord {best}', streak1: 'dzień z rzędu', streakN: 'dni z rzędu', nextIn: 'Następna plansza za {t}',
+    qrLabel: 'Zeskanuj i zagraj', qrShare: 'Zeskanuj i zagraj — podaj dalej', share: 'Udostępnij grę', shareTxt: 'Zeskanuj kod aparatem telefonu, aby otworzyć grę.', shareBtn: 'Udostępnij …', copy: 'Kopiuj link', copied: 'Skopiowano!', close2: 'Zamknij', rights: 'Wszelkie prawa zastrzeżone', shareResult: 'Udostępnij wynik', copyResult: 'Udostępnij wynik', challenge: 'Wyzwij…', chLbl_boss: 'Wyzwij szefa', chLbl_pm: 'Wyzwij premiera', chLbl_accountant: 'Wyzwij księgowego', chLbl_coworker: 'Wyzwij współpracownika', chLbl_bus: 'Wyzwij kierowcę autobusu', chLbl_neighbour: 'Wyzwij sąsiada', chLbl_kiosk: 'Wyzwij sprzedawcę z kiosku', chLbl_manager: 'Wyzwij kierownika', chLbl_intern: 'Wyzwij stażystę', chLbl_other: 'Wyzwij kogoś innego', chTxt_boss: 'Szefie, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Pobijesz mnie?', chTxt_pm: 'Panie Premierze, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Dam radę Pan też?', chTxt_accountant: 'Księgowy, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Sprawdzisz moje wyniki?', chTxt_coworker: 'Hej, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Przerwa na jedną planszę?', chTxt_bus: 'Panie kierowco, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Zdąży Pan przed następnym przystankiem?', chTxt_neighbour: 'Sąsiedzie, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Przebijesz mnie przez ścianę?', chTxt_kiosk: 'Hej z kiosku, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Jedna plansza do losów?', chTxt_manager: 'Kierowniku, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Weźmie Pan to na warsztat?', chTxt_intern: 'Stażysto, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Pokażesz, że dasz radę?', chTxt_other: 'Hej, zrobiłem dzisiejsze wyzwanie Stop60 w {s}/5 🐱 Dasz radę mnie pobić?', meanwhile: 'Zanim jutro będzie nowa plansza', moreLava: 'Bieg dnia w Lawowej kulce', moreAxi: 'Aximore', moreSite: 'Więcej gier na stop60.no', streakLine: '🔥 {cur} {unit} · rekord {best}', streak1: 'dzień z rzędu', streakN: 'dni z rzędu', nextIn: 'Następna plansza za {t}',
     winTitle: 'Rozwiązane!', winTxt: 'Plansza rozwiązana – poziom: {diff}.', winDaily: 'Plansza dnia rozwiązana!', noHintsWin: ' Bez podpowiedzi!', newBest: 'Nowy rekord: {t}!', best: 'Najlepszy czas: {t}', solvedN: 'Rozwiązane plansze na tym poziomie: {n}',
     again: 'Nowa plansza', againDaily: 'Nowa plansza (średni)', confirmNew: 'Zacząć nową planszę? Obecna zostanie utracona.', no: 'Nie', yes: 'Tak',
     hNaked: 'Do tego pola pasuje tylko {d}.', hHidden: '{d} może stać tylko tutaj w tym {u}.', uRow: 'wierszu', uCol: 'kolumnie', uBox: 'kwadracie 3×3', hLogic: 'Po wykreśleniu kandydatów pasuje tu tylko {d}.',
@@ -584,7 +605,7 @@ var T = {
     daily: 'Daily puzzle', dailyInfo: 'Same board for everyone today · {date}', dailyDone: 'Solved today ✓ · {date}',
     timed: 'Timed mode', timedSub: 'Clock and best times (off by default)', showErr: 'Show mistakes', showErrSub: 'Wrong digits turn red',
     continue: 'Continue board', contInfo: '{diff} · {n} cells left', free: 'Made with passion – free for everyone',
-    qrLabel: 'Scan to play', qrShare: 'Scan to play — pass it on', share: 'Share the game', shareTxt: 'Scan the code with your phone camera to open the game.', shareBtn: 'Share …', copy: 'Copy link', copied: 'Copied!', close2: 'Close', rights: 'All rights reserved', shareResult: 'Share result', copyResult: 'Share result', meanwhile: 'Until tomorrow’s puzzle', moreLava: 'Today’s run in Lava Marble', moreAxi: 'Aximore', moreSite: 'More games at stop60.no', streakLine: '🔥 {cur} {unit} · best {best}', streak1: 'day in a row', streakN: 'days in a row', nextIn: 'Next board in {t}',
+    qrLabel: 'Scan to play', qrShare: 'Scan to play — pass it on', share: 'Share the game', shareTxt: 'Scan the code with your phone camera to open the game.', shareBtn: 'Share …', copy: 'Copy link', copied: 'Copied!', close2: 'Close', rights: 'All rights reserved', shareResult: 'Share result', copyResult: 'Share result', challenge: 'Challenge…', chLbl_boss: 'Challenge your boss', chLbl_pm: 'Challenge the Prime Minister', chLbl_accountant: 'Challenge your accountant', chLbl_coworker: 'Challenge a coworker', chLbl_bus: 'Challenge the bus driver', chLbl_neighbour: 'Challenge a neighbour', chLbl_kiosk: 'Challenge the kiosk seller', chLbl_manager: 'Challenge your manager', chLbl_intern: 'Challenge the intern', chLbl_other: 'Challenge someone else', chTxt_boss: 'Boss, I did today’s Stop60 challenge in {s}/5 🐱 Think you can beat me?', chTxt_pm: 'Prime Minister, I did today’s Stop60 challenge in {s}/5 🐱 Fancy a go?', chTxt_accountant: 'Accountant, I did today’s Stop60 challenge in {s}/5 🐱 Can you beat the numbers?', chTxt_coworker: 'Hey, I did today’s Stop60 challenge in {s}/5 🐱 Fancy a round at lunch?', chTxt_bus: 'Bus driver, I did today’s Stop60 challenge in {s}/5 🐱 Can you finish before the next stop?', chTxt_neighbour: 'Neighbour, I did today’s Stop60 challenge in {s}/5 🐱 Think you can beat me through the wall?', chTxt_kiosk: 'Kiosk seller, I did today’s Stop60 challenge in {s}/5 🐱 Fancy a round between customers?', chTxt_manager: 'Manager, I did today’s Stop60 challenge in {s}/5 🐱 Fancy taking this on?', chTxt_intern: 'Intern, I did today’s Stop60 challenge in {s}/5 🐱 Fancy showing you can beat me?', chTxt_other: 'Hey, I did today’s Stop60 challenge in {s}/5 🐱 Think you can beat me?', meanwhile: 'Until tomorrow’s puzzle', moreLava: 'Today’s run in Lava Marble', moreAxi: 'Aximore', moreSite: 'More games at stop60.no', streakLine: '🔥 {cur} {unit} · best {best}', streak1: 'day in a row', streakN: 'days in a row', nextIn: 'Next board in {t}',
     winTitle: 'Solved!', winTxt: 'Board solved – level: {diff}.', winDaily: 'Today\u2019s puzzle is solved!', noHintsWin: ' No hints!', newBest: 'New best: {t}!', best: 'Best time: {t}', solvedN: 'Boards solved at this level: {n}',
     again: 'New board', againDaily: 'New medium board', confirmNew: 'Start a new board? The current one will be lost.', no: 'No', yes: 'Yes',
     hNaked: 'Only {d} fits in this cell.', hHidden: '{d} can only go here in this {u}.', uRow: 'row', uCol: 'column', uBox: '3×3 box', hLogic: 'After eliminating candidates, only {d} fits here.',
@@ -937,6 +958,89 @@ function shareResult() {
 }
 $('wResult').onclick = shareResult;
 
+var CHALLENGE_IDS = ['boss','pm','accountant','coworker','bus','neighbour','kiosk','manager','intern','other'];
+function challengeScore() {
+  if (!S || !S.done) return 1;
+  var s = 5 - (S.hintsUsed | 0) - (S.mistakes | 0);
+  return s < 1 ? 1 : s;
+}
+function challengeShareText(id) {
+  return t('chTxt_' + id, { s: challengeScore() }) + '\nstop60.no/daily/';
+}
+function paintChallenge() {
+  var box = $('wChallenge'), menu = $('wChMenu'), open = $('wChOpen');
+  if (!box) return;
+  box.hidden = !(S && S.done && S.daily);
+  if (open) {
+    var sp = open.querySelector('span');
+    if (sp) sp.textContent = t('challenge');
+    else open.textContent = t('challenge');
+    open.setAttribute('aria-expanded', 'false');
+  }
+  if (menu) {
+    menu.hidden = true;
+    menu.setAttribute('aria-label', t('challenge'));
+    Array.prototype.forEach.call(menu.querySelectorAll('[data-ch]'), function (btn) {
+      var id = btn.getAttribute('data-ch');
+      btn.textContent = t('chLbl_' + id);
+    });
+  }
+}
+function toggleChallengeMenu() {
+  var menu = $('wChMenu'), open = $('wChOpen');
+  if (!menu || ($('wChallenge') && $('wChallenge').hidden)) return;
+  var show = menu.hidden;
+  menu.hidden = !show;
+  if (open) open.setAttribute('aria-expanded', show ? 'true' : 'false');
+}
+function shareChallenge(id) {
+  if (shareChallenge.busy || !S || !S.done || !S.daily) return;
+  if (CHALLENGE_IDS.indexOf(id) < 0) return;
+  var text = challengeShareText(id), data = { text: text }, native = false;
+  try { native = !!(navigator.share && (!navigator.canShare || navigator.canShare(data))); } catch (e) { native = !!navigator.share; }
+  shareChallenge.busy = true;
+  var counted = false;
+  function count() { if (!counted) { counted = true; track('challenge-' + id); } }
+  function finish() { shareChallenge.busy = false; }
+  function markOk() {
+    count();
+    var btn = $('wChMenu') && $('wChMenu').querySelector('[data-ch="' + id + '"]');
+    if (btn) { btn.textContent = t('copied'); setTimeout(function () { btn.textContent = t('chLbl_' + id); }, 1600); }
+    finish();
+  }
+  if (native) {
+    Promise.resolve().then(function () { return navigator.share(data); }).then(function () { markOk(); }, function (err) {
+      var name = (err && err.name) || '';
+      if (name === 'AbortError') { finish(); return; }
+      copyText(text).then(markOk, finish);
+    });
+    return;
+  }
+  copyText(text).then(markOk, finish);
+}
+$('wChOpen').onclick = function (e) { ac(); if (e && e.stopPropagation) e.stopPropagation(); toggleChallengeMenu(); };
+$('wChMenu').onclick = function (e) {
+  var b = e.target && e.target.closest ? e.target.closest('[data-ch]') : null;
+  if (!b) return;
+  ac();
+  shareChallenge(b.getAttribute('data-ch'));
+};
+document.addEventListener('click', function (e) {
+  var box = $('wChallenge'), menu = $('wChMenu'), open = $('wChOpen');
+  if (!box || box.hidden || !menu || menu.hidden) return;
+  if (box.contains && e.target && box.contains(e.target)) return;
+  menu.hidden = true;
+  if (open) open.setAttribute('aria-expanded', 'false');
+});
+document.addEventListener('keydown', function (e) {
+  if ((e.key || e.code) !== 'Escape') return;
+  var menu = $('wChMenu'), open = $('wChOpen');
+  if (!menu || menu.hidden) return;
+  menu.hidden = true;
+  if (open) { open.setAttribute('aria-expanded', 'false'); if (open.focus) open.focus(); }
+});
+
+
 /* ---------------- win screen ---------------- */
 function openWin() {
   if (!S || !S.done) return;
@@ -948,7 +1052,7 @@ function openWin() {
   $('wsHints').textContent = S.hintsUsed + '/' + HINTS; $('wsErr').textContent = S.mistakes;
   $('winBest').textContent = S.timed ? (S.rec ? t('newBest', { t: fmtTime(st.best) }) : t('best', { t: fmtTime(st.best) })) : t('solvedN', { n: st.won });
   $('wAgain').textContent = S.daily ? t('againDaily') : t('again');
-  $('wResult').hidden = !S.daily; paintWinShare();
+  $('wResult').hidden = !S.daily; paintWinShare(); paintChallenge();
   paintDailyMeta();
   show('win'); confetti();
 }
@@ -1021,7 +1125,7 @@ if (gcOn) {
 if (DEBUG) window.LOGIKK = {
   state: function () { return S && JSON.parse(JSON.stringify(S)); }, prefs: function () { return JSON.parse(JSON.stringify(prefs)); }, stats: function () { return JSON.parse(JSON.stringify(stats)); },
   gc: function () { return { on: gcOn, pend: gcPend.map(function (x) { return x.n; }), log: window.__gcLog || [], path: window.goatcounter && window.goatcounter.path }; },
-  shareText: function () { return resultShareText(); }, dayNum: dayNum, emoji: resultEmoji, streak: function () { return JSON.parse(JSON.stringify(stats.streak || {})); },
+  shareText: function () { return resultShareText(); }, challengeText: function (id) { return challengeShareText(id); }, challengeScore: challengeScore, dayNum: dayNum, emoji: resultEmoji, streak: function () { return JSON.parse(JSON.stringify(stats.streak || {})); },
   cellXY: function (i) { var r = cells[i].getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width }; },
   fillAllBut: function (n) { var e = []; for (var i = 0; i < 81; i++) if (S.cur[i] !== S.sol[i]) e.push(i); e.slice(n || 0).forEach(function (i) { S.cur[i] = S.sol[i]; S.notes[i] = 0; }); save(); render(); return e.slice(0, n || 0); },
   load: function (puz, sol) { S.puz = puz.slice(); S.sol = sol.slice(); S.cur = puz.slice(); S.notes = puz.map(function () { return 0; }); S.hist = []; S.hintsUsed = 0; S.mistakes = 0; S.done = false; S.sel = -1; save(); render(); },
